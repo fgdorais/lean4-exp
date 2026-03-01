@@ -1,0 +1,16 @@
+name = "lean4-exp"
+defaultTargets = ["Extra", "Logic", "Algebra"]
+
+[[lean_lib]]
+name = "Extra"
+
+[[lean_lib]]
+name = "Logic"
+
+[[lean_lib]]
+name = "Algebra"
+
+[[require]]
+name = "batteries"
+git = "https://github.com/leanprover-community/batteries"
+rev = "main"
