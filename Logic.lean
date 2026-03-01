@@ -4,6 +4,7 @@ import Logic.Prelude
 import Logic.Proposition.Classes
 import Logic.Proposition.Lemmas
 import Logic.Proposition.Tactics
+import Logic.Relation.Basic
 import Logic.Relation.Classes
 import Logic.Relation.Equivalence
 import Logic.Relation.Order
