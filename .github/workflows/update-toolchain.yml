@@ -26,7 +26,7 @@ jobs:
       - name: update lean-toolchain
         id: toolchain-tag
         run: |
-          curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/nightly-testing/lean-toolchain"
+          curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/main/lean-toolchain"
           echo "new_tag=$(cut -d ':' -f2 lean-toolchain)" >> GITHUB_OUTPUT
           git add lean-toolchain
 
