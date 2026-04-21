@@ -16,6 +16,7 @@ jobs:
         with:
           ref: nightly-testing
           fetch-depth: 0
+          token: ${{ secrets.EXP_PR_TOKEN }}
 
       - name: merge main
         run: |
