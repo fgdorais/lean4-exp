@@ -1,0 +1,29 @@
+# Update `lean-toolchain` in `nightly-testing`
+
+name: Update Nightly Testing
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 * * * *'
+
+jobs:
+  update-nightly-testing:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          ref: nightly-testing
+
+      - name: update lean-toolchain
+        id: toolchain-tag
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/nightly-testing/lean-toolchain"
+          NEW_TAG=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
+          git add lean-toolchain
+          git commit -m "chore: update toolchain $NEW_TAG"
+          git push origin nightly-testing

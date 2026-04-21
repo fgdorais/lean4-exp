@@ -1,0 +1,41 @@
+# Update `lean-toolchain` in `main`
+
+name: Update Toolchain
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 3 * * *'
+
+jobs:
+  update-toolchain:
+    name: update toolchain
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          ref: nightly-testing
+
+      - name: set user
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+
+      - name: update lean-toolchain
+        id: toolchain-tag
+        run: |
+          curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/nightly-testing/lean-toolchain"
+          echo "new_tag=$(cut -d ':' -f2 lean-toolchain)" >> GITHUB_OUTPUT
+          git add lean-toolchain
+
+      - name: create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.EXP_PR_TOKEN }}
+          commit-message: "chore: update toolchain ${{ steps.toolchain-tag.outputs.new_tag }}"
+          branch: update-toolchain-${{ steps.toolchain-tag.outputs.new_tag }}
+          base: main
+          delete-branch: true
+          title: "chore: update toolchain ${{ steps.toolchain-tag.outputs.new_tag }}"
