@@ -11,14 +11,14 @@ inductive Index.{u} {α : Type u} : List α → Type u where
 
 instance Index.instDecidableEq : {xs : List α} → DecidableEq (Index xs)
   | _::_, head, head => isTrue rfl
-  | _::_, head, tail _ => isFalse (by grind only)
-  | _::_, tail _, head => isFalse (by grind only)
+  | _::_, head, tail _ => isFalse (by intro; contradiction)
+  | _::_, tail _, head => isFalse (by intro; contradiction)
   | _::_, tail i, tail j =>
     match instDecidableEq i j with
     | isTrue rfl => isTrue rfl
     | isFalse h => isFalse fun | rfl => h rfl
 
-@[reducible] def Index.val : {xs : List α} → Index xs → α
+abbrev Index.val : {xs : List α} → Index xs → α
   | x::_, head => x
   | _::_, tail i => val i
 
@@ -105,7 +105,7 @@ theorem find_none {p : Index xs → Bool} (i : Index xs) : Index.find? p = none 
         · next h => rw [ih _ h]
 
 def search {p : Index xs → Prop} [DecidablePred p] (h : ∃ i, p i) : Index xs :=
-  match hi : Index.find? λ i => p i with
+  match hi : Index.find? (p ·) with
   | some i => i
   | none => absurd h $ by
     intro ⟨j, hj⟩
@@ -139,15 +139,16 @@ theorem search_ext {p q : Index xs → Prop} [DecidablePred p] [DecidablePred q]
   exact propext (h i)
 
 protected def toNat : {xs : List α} → (i : Index xs) → Nat
-| _, head => 0
-| _, tail i => Index.toNat i + 1
+  | _, head => 0
+  | _, tail i => Index.toNat i + 1
 
 @[inline]
 def toNatTR (i : Index xs) : Nat :=
-  let rec loop : {xs : List _} → Index xs → Nat → Nat
+  loop i 0
+where
+  loop : {xs : List _} → Index xs → Nat → Nat
   | _, .head, n => n
   | _, .tail i, n => loop i (n+1)
-  loop i 0
 
 @[csimp] theorem toNat_eq_toNatTR : @Index.toNat = @Index.toNatTR := by
   funext _ _ i
@@ -179,8 +180,8 @@ def ofFinTR {xs : List α} (i : Fin xs.length) : Index xs :=
 
 @[implemented_by ofFinTR]
 protected def ofFin : {xs : List α} → Fin xs.length → Index xs
-| _::_, ⟨0,_⟩ => head
-| _::_, ⟨i+1,h⟩ => tail (Index.ofFin ⟨i, Nat.lt_of_succ_lt_succ h⟩)
+  | _::_, ⟨0,_⟩ => head
+  | _::_, ⟨i+1,h⟩ => tail (Index.ofFin ⟨i, Nat.lt_of_succ_lt_succ h⟩)
 
 theorem ofFin_toFin (i : Index xs) : Index.ofFin i.toFin = i := by
   induction xs with

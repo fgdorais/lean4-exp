@@ -77,10 +77,12 @@ theorem val_append_inr (j : Index ys) : (append_inr (xs:=xs) j).val = j.val := b
   | nil => rfl
   | cons _ _ ih => exact ih
 
-theorem val_append {xs ys : List α} (i : Sum (Index xs) (Index ys)) : (append i).val = match i with | .inl i => i.val | .inr j => j.val := by
+theorem val_append {xs ys : List α} (i : Sum (Index xs) (Index ys)) :
+    (append i).val = match i with | .inl i => i.val | .inr j => j.val :=
   match i with
-  | .inl _ => exact val_append_inl ..
-  | .inr _ => exact val_append_inr ..
+  | .inl _ => val_append_inl ..
+  | .inr _ => val_append_inr ..
 
-theorem val_unappend {xs ys : List α} (k : Index (xs ++ ys)) : (match unappend k with | .inl i => i.val | .inr j => j.val) = k.val := by
+theorem val_unappend {xs ys : List α} (k : Index (xs ++ ys)) :
+    (match unappend k with | .inl i => i.val | .inr j => j.val) = k.val := by
   rw [←append_unappend k, val_append, unappend_append]

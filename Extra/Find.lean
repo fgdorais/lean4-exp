@@ -64,15 +64,15 @@ protected abbrev all [Find α] (p : α → Bool) := (Find.find? (!p ·)).isNone
 @[simp] theorem all_iff_forall [Find α] (p : α → Bool) : Find.all p ↔ ∀ x, p x := by
   rw [Find.all, find_is_none_iff_forall_false]; simp
 
-def instInhabited [Find α] [Nonempty α] : Inhabited α where
+@[reducible] def instInhabited [Find α] [Nonempty α] : Inhabited α where
   default :=
     match h : find? (fun _ => true) with
     | some x => x
     | none => Bool.noConfusion $ show true = false by
-      cases inferInstanceAs (Nonempty α) with
+      cases (inferInstance : Nonempty α) with
       | intro x => rw [←find?_eq_none (x:=x) h]
 
-protected def ofEquiv {α β} [Find α] (e : Equiv α β) : Find β where
+@[reducible] protected def ofEquiv {α β} [Find α] (e : Equiv α β) : Find β where
   find? p :=
     match find? fun x => p (e.fwd x) with
     | some x => some (e.fwd x)

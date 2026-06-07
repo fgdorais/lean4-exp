@@ -117,5 +117,3 @@ theorem getElem_diag_eq [Zero α] (d : Vector α n) (i) (hi : i < n) :
 theorem getElem_diag [Zero α] (d : Vector α n) (i j) (hi : i < n) (hj : j < n) :
     (diag d)[i][j] = if i = j then d[i] else 0 := by
   simp [diag]
-
-def dot [Std.SemiRing α]

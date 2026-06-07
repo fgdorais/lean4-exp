@@ -1,4 +1,6 @@
-import Extra.Fin.Coding
+import Extra.Equiv
+import Extra.Equiv.Fin
+import Extra.Find
 
 namespace Fin
 
@@ -14,6 +16,7 @@ class Enum (α : Type _) where
 @[simp] theorem Enum.enum_find [Enum α] (x : α) :
     Enum.enum (Enum.find x) = x := by rw [enum_eq_iff_find_eq]
 
+@[implicit_reducible]
 def Enum.ofEquiv (e : Equiv (Fin n) α) : Enum α where
   size := n
   enum := e.fwd
@@ -34,39 +37,39 @@ instance (α) [Enum α] : DecidableEq α :=
     else
       isFalse <| fun | rfl => h rfl
 
-instance (α) [Enum α] : Find α := Find.ofEquiv (Enum.toEquiv α)
+--instance (α) [Enum α] : Find α := Find.ofEquiv (Enum.toEquiv α)
 
-instance : Enum Empty := .ofEquiv equivEmpty
+instance : Enum Empty := .ofEquiv Equiv.equivEmpty
 
-instance : Enum PUnit := .ofEquiv equivPUnit
+instance : Enum PUnit := .ofEquiv Equiv.equivPUnit
 
-instance : Enum Unit := .ofEquiv equivUnit
+instance : Enum Unit := .ofEquiv Equiv.equivPUnit
 
-instance : Enum Bool := .ofEquiv equivBool
+instance : Enum Bool := .ofEquiv Equiv.equivBool
 
 instance (n) : Enum (Fin n) := .ofEquiv .id
 
 instance (α) [Enum α] : Enum (Option α) :=
-  .ofEquiv <| .comp (Option.equiv (Enum.toEquiv α)) (equivOption (Enum.size α))
+  .ofEquiv <| .comp (Option.equiv (Enum.toEquiv α)) Equiv.equivOption
 
 instance (α β) [Enum α] [Enum β] : Enum (Sum α β) :=
-  .ofEquiv <| .comp (Sum.equiv (Enum.toEquiv α) (Enum.toEquiv β)) (equivSum (Enum.size α) (Enum.size β))
+  .ofEquiv <| .comp (Sum.equiv (Enum.toEquiv α) (Enum.toEquiv β)) Equiv.equivSum
 
 instance (α β) [Enum α] [Enum β] : Enum (Prod α β) :=
-  .ofEquiv <| .comp (Prod.equiv (Enum.toEquiv α) (Enum.toEquiv β)) (equivProd (Enum.size α) (Enum.size β))
+  .ofEquiv <| .comp (Prod.equiv (Enum.toEquiv α) (Enum.toEquiv β)) Equiv.equivProd
 
 instance (β : α → Type _) [Enum α] [(x : α) → Enum (β x)] : Enum (Sigma β) :=
-  .ofEquiv <| .comp (Sigma.equiv (Enum.toEquiv α) (fun x => Enum.toEquiv (β (Enum.enum x)))) (equivSigma (fun x => Enum.size (β (Enum.enum x))))
+  .ofEquiv <| .comp (Sigma.equiv (Enum.toEquiv α) (fun x => Enum.toEquiv (β (Enum.enum x)))) (Equiv.equivSigma _)
 
 instance (β : α → Type _) [Enum α] [(x : α) → Enum (β x)] : Enum ((x : α) → β x) :=
-  .ofEquiv <| .comp (Fun.equiv (Enum.toEquiv α) (fun x => Enum.toEquiv (β (Enum.enum x)))) (equivPi (fun x => Enum.size (β (Enum.enum x))))
+  .ofEquiv <| .comp (Fun.equiv (Enum.toEquiv α) (fun x => Enum.toEquiv (β (Enum.enum x)))) (Equiv.equivPi _)
 
-instance (p : α → Prop) [DecidablePred p] [Enum α] : Enum { x // p x} :=
-  .ofEquiv <| .comp (Subtype.equiv (Enum.toEquiv α) spec) (equivSubtype (fun i => p (Enum.enum i)))
-where
-  spec := by intros; simp [Enum.toEquiv]
+-- instance (p : α → Prop) [DecidablePred p] [Enum α] : Enum { x // p x } :=
+--   .ofEquiv <| .comp (Subtype.equiv (Enum.toEquiv α) spec) (Equiv.equivSubtype _)
+-- where
+--   spec := by intros; simp [Enum.toEquiv]
 
-instance (s : Setoid α) [DecidableRel s.r] [Enum α] : Enum (Quotient s) :=
-  .ofEquiv <| .comp (Quotient.equiv (Enum.toEquiv α) spec) (equivQuotient (s.map fun i => Enum.enum i))
-where
-  spec := by intros; simp [Enum.toEquiv, HasEquiv.Equiv]; rfl
+-- instance (s : Setoid α) [DecidableRel s.r] [Enum α] : Enum (Quotient s) :=
+--   .ofEquiv <| .comp (Quotient.equiv (Enum.toEquiv α) spec) (equivQuotient (s.map fun i => Enum.enum i))
+-- where
+--   spec := by intros; simp [Enum.toEquiv, HasEquiv.Equiv]; rfl
