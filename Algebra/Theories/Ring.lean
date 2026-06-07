@@ -20,6 +20,7 @@ class Ring : Prop extends Semiring (no_index s.toSemiringSig) where
   protected add_right_id (x) : x ⊹ 𝟘 = x
   protected add_right_inv (x) : x ⊹ ∼x = 𝟘
 
+@[implicit_reducible]
 protected def Ring.infer [OpAssoc s.add] [OpComm s.add] [OpRightInv s.add s.neg s.zero] [OpRightId s.add s.zero] [OpAssoc s.mul] [OpLeftDistrib s.mul s.add] [OpRightDistrib s.mul s.add] : Ring s where
   add_assoc := op_assoc _
   add_comm := op_comm _
@@ -45,6 +46,7 @@ class CommRing: Prop extends CommSemiring (no_index s.toSemiringSig) where
   protected add_right_id (x) : x ⊹ 𝟘 = x
   protected add_right_inv (x) : x ⊹ ∼x = 𝟘
 
+@[implicit_reducible]
 protected def CommRing.infer [OpAssoc s.add] [OpComm s.add] [OpRightInv s.add s.neg s.zero] [OpRightId s.add s.zero] [OpAssoc s.mul] [OpComm s.mul] [OpRightDistrib s.mul s.add] : CommRing s where
   add_assoc := op_assoc _
   add_comm := op_comm _

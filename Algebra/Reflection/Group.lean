@@ -6,7 +6,6 @@ import Algebra.Instances
 import Algebra.Theories.Group
 
 open List
-open Logic
 
 namespace Algebra
 
@@ -26,7 +25,7 @@ instance instDecidableEq (xs : List α) : DecidableEq (Word xs)
 | id, neg _ _ => isFalse (by grind only)
 | pos _ _, id => isFalse (by grind only)
 | pos i a, pos j b =>
-  match inferDecidable (i = j), instDecidableEq xs a b with
+  match (inferInstance : Decidable (i = j)), instDecidableEq xs a b with
   | isTrue rfl, isTrue rfl => isTrue rfl
   | isFalse h, _ => isFalse fun | rfl => h rfl
   | _, isFalse h => isFalse fun | rfl => h rfl
@@ -34,7 +33,7 @@ instance instDecidableEq (xs : List α) : DecidableEq (Word xs)
 | neg _ _, id => isFalse (by grind only)
 | neg _ _, pos _ _ => isFalse (by grind only)
 | neg i a, neg j b =>
-  match inferDecidable (i = j), instDecidableEq xs a b with
+  match (inferInstance : Decidable (i = j)), instDecidableEq xs a b with
   | isTrue rfl, isTrue rfl => isTrue rfl
   | isFalse h, _ => isFalse fun | rfl => h rfl
   | _, isFalse h => isFalse fun | rfl => h rfl
@@ -95,7 +94,7 @@ theorem isReduced_lift {x : α} (h : w.isReduced) : (w.lift x).isReduced := by
     | id => rfl
     | pos _ _ => rw [lift, lift, isReduced]; exact ih (isReduced_pos_tail h)
     | neg j _ =>
-      by_cases i = j with
+      match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne =>
         rw [lift, lift, isReduced, Bool.and_eq_true]
@@ -106,7 +105,7 @@ theorem isReduced_lift {x : α} (h : w.isReduced) : (w.lift x).isReduced := by
     match w with
     | id => rfl
     | pos j _ =>
-      by_cases i = j with
+      match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne =>
         rw [lift, lift, isReduced, Bool.and_eq_true]
@@ -120,7 +119,7 @@ theorem isReduced_rpos (h : w.isReduced) : (w.rpos i).isReduced := by
   | id => exact h
   | pos _ _ => exact h
   | neg j _ =>
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue hij => simp only [rpos]; rw [if_pos hij, isReduced_neg_tail h]
     | isFalse hij => simp only [rpos]; rw [if_neg hij, isReduced, decide_eq_true hij, h]; rfl
 
@@ -128,7 +127,7 @@ theorem isReduced_rneg (h : w.isReduced) : (w.rneg i).isReduced := by
   match w with
   | id => exact h
   | pos j _ =>
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue hij => simp only [rneg]; rw [if_pos hij, isReduced_pos_tail h]
     | isFalse hij => simp only [rneg]; rw [if_neg hij, isReduced, decide_eq_true hij, h]; rfl
   | neg _ _ => exact h
@@ -154,11 +153,11 @@ theorem rpos_rneg_cancel (h : w.isReduced) : rpos i (rneg i w) = w := by
   | id => simp [rneg, rpos]
   | pos k w =>
     unfold rneg rpos
-    match inferDecidable (i = k), w with
+    match (inferInstance : Decidable (i = k)), w with
     | isTrue rfl, id => simp
     | isTrue rfl, pos k w => simp
     | isTrue rfl, neg k w =>
-      by_cases i = k with
+      match (inferInstance : Decidable (i = k)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne => simp [hne]
     | isFalse hne, _ => simp [hne]
@@ -170,10 +169,10 @@ theorem rneg_rpos_cancel (h : w.isReduced) : rneg i (rpos i w) = w := by
   | pos k w => simp [rneg, rpos]
   | neg k w =>
     unfold rneg rpos
-    match inferDecidable (i = k), w with
+    match (inferInstance : Decidable (i = k)), w with
     | isTrue rfl, id => simp
     | isTrue rfl, pos k w =>
-      by_cases i = k with
+      match (inferInstance : Decidable (i = k)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne => simp [hne]
     | isTrue rfl, neg k w => simp
@@ -185,7 +184,7 @@ theorem rapp_rpos_left (h : w.isReduced) : rapp (rpos i v) w = rpos i (rapp v w)
   | pos j v => rfl
   | neg j v =>
     rw [rapp]
-    match inferDecidable (i = j) with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       rw [rpos_rneg_cancel]
       simp only [rpos]
@@ -201,7 +200,7 @@ theorem rapp_rneg_left (h : w.isReduced) : rapp (rneg i v) w = rneg i (rapp v w)
   | id => rfl
   | pos j v =>
     rw [rapp]
-    match inferDecidable (i = j) with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       rw [rneg_rpos_cancel (isReduced_rapp h)]
       simp only [rneg]
@@ -218,7 +217,7 @@ theorem raux_rpos_left (h : w.isReduced) : raux (rpos i v) w = raux v (rneg i w)
   | pos j v => rfl
   | neg j v =>
     rw [raux]
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       rw [rpos_rneg_cancel h]
       simp only [rpos]
@@ -233,7 +232,7 @@ theorem raux_rneg_left (h : w.isReduced) : raux (rneg i v) w = raux v (rpos i w)
   | id => rfl
   | pos j v =>
     rw [raux]
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       rw [rneg_rpos_cancel h]
       simp only [rneg]
@@ -253,7 +252,7 @@ theorem rapp_id (h : w.isReduced) : rapp w id = w := by
     | id => rfl
     | pos j w => rfl
     | neg j w =>
-      by_cases i = j with
+      match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne => simp only [rpos]; rw [if_neg hne]
   | neg i w ih =>
@@ -261,7 +260,7 @@ theorem rapp_id (h : w.isReduced) : rapp w id = w := by
     match w with
     | id => rfl
     | pos j w =>
-      by_cases i = j with
+      match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
       | isFalse hne => simp only [rneg]; rw [if_neg hne]
     | neg j w => rfl
@@ -333,7 +332,7 @@ theorem eval_rpos [Group s] (i : Index xs) (a : Word xs) : eval s (rpos i a) = s
   | id => rfl
   | pos j a => rfl
   | neg j a =>
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       simp only [rpos]
       rw [if_pos trivial, eval_neg, ←op_assoc s.op, op_right_inv s.op, op_left_id s.op]
@@ -345,7 +344,7 @@ theorem eval_rneg [Group s] (i : Index xs) (a : Word xs) : eval s (rneg i a) = s
   match a with
   | id => rfl
   | pos j a =>
-    by_cases i = j with
+    match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       simp only [rneg]
       rw [if_pos trivial, eval_pos, ←op_assoc s.op, op_left_inv s.op, op_left_id s.op]
@@ -385,7 +384,7 @@ protected def eq : {a b : Expr xs} → a.word = b.word → a = b
 
 instance (xs : List α) : DecidableEq (Expr xs)
 | ⟨a,_⟩, ⟨b,_⟩ =>
-  match inferDecidable (a = b) with
+  match (inferInstance : Decidable (a = b)) with
   | isTrue h => isTrue (Expr.eq h)
   | isFalse h => isFalse fun | rfl => h rfl
 

@@ -18,6 +18,7 @@ class UnitalSemiring : Prop extends Semiring (no_index s.toSemiringSig) where
   protected mul_left_id (x) : e ⋆ x = x
   protected mul_right_id (x) : x ⋆ e = x
 
+@[implicit_reducible]
 protected def UnitalSemiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpLeftDistrib s.mul s.add] [OpRightDistrib s.mul s.add] [OpLeftId s.mul s.one] [OpRightId s.mul s.one] : UnitalSemiring s where
   add_assoc := op_assoc _
   add_comm := op_comm _
@@ -40,6 +41,7 @@ end UnitalSemiring
 class UnitalCommSemiring : Prop extends CommSemiring (no_index s.toSemiringSig) where
   protected mul_right_id (x) : x ⋆ e = x
 
+@[implicit_reducible]
 protected def UnitalCommSemiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpComm s.mul] [OpRightDistrib s.mul s.add] [OpRightId s.mul s.one] : UnitalCommSemiring s where
   add_assoc := op_assoc _
   add_comm := op_comm _

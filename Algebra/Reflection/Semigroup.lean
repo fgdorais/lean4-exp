@@ -6,7 +6,6 @@ import Algebra.Instances
 import Algebra.Theories.Semigroup
 
 open List
-open Logic
 
 namespace Algebra
 
@@ -21,13 +20,13 @@ variable {α} {xs : List α}
 
 instance instDecidableEq : DecidableEq (Expr xs)
 | var i, var j =>
-  match inferDecidable (i = j) with
+  match (inferInstance : Decidable (i = j)) with
   | isTrue rfl => isTrue rfl
   | isFalse h => isFalse fun | rfl => h rfl
 | var _, app _ _ => isFalse (by grind only)
 | app _ _, var _ => isFalse (by grind only)
 | app a i, app b j =>
-  match instDecidableEq a b, inferDecidable (i = j) with
+  match instDecidableEq a b, (inferInstance : Decidable (i = j)) with
   | isTrue rfl, isTrue rfl => isTrue rfl
   | _, isFalse h => isFalse fun | rfl => h rfl
   | isFalse h, _ => isFalse fun | rfl => h rfl
