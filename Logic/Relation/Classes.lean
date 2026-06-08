@@ -161,9 +161,11 @@ instance [Reflexive r] [Euclidean r] : Symmetric r where
 instance [Symmetric r] [Transitive r] : Euclidean r where
   eucl hxy hxz := Transitive.trans (Symmetric.symm hxy) hxz
 
+@[implicit_reducible]
 def Euclidean.toSymmetric {α} (r : α → α → Prop) [Reflexive r] [Euclidean r] : Symmetric r where
   symm hxy := Euclidean.eucl hxy Reflexive.rfl
 
+@[implicit_reducible]
 def Euclidean.toTransitive {α} (r : α → α → Prop) [Symmetric r] [Euclidean r] : Transitive r where
   trans hxy hyz := Euclidean.eucl (Symmetric.symm hxy) hyz
 
@@ -189,6 +191,7 @@ class Comparison {α} (r : α → α → Prop) : Prop where
 @[default_instance]
 instance {α} (r : α → α → Prop) [Comparison r] : HComparison r r := ⟨Comparison.compare⟩
 
+@[implicit_reducible]
 def Transitive.toComparison {α} (r : α → α → Prop) [ComplementedRel r] [Transitive r] : Comparison fun x y => ¬r y x where
   compare := by
     intro x y nxy z
@@ -220,6 +223,7 @@ class Connex {α} (r : α → α → Prop) : Prop where
 @[default_instance]
 instance {α} (r : α → α → Prop) [Connex r] : HConnex r (.≠.) := ⟨Connex.connex⟩
 
+@[implicit_reducible]
 def Connex.toAntisymmetric {α} (r : α → α → Prop) [StableEq α] [Connex r] : Antisymmetric fun x y => ¬r y x where
   antisymm := by
     intro x y nxy nyx
@@ -229,6 +233,7 @@ def Connex.toAntisymmetric {α} (r : α → α → Prop) [StableEq α] [Connex r
       | inl hyx => exact nyx hyx
       | inr hxy => exact nxy hxy
 
+@[implicit_reducible]
 def Antisymmetric.toConnex {α} (r : α → α → Prop) [WeaklyComplementedRel r] [Antisymmetric r] : Connex fun x y => ¬r y x where
   connex := by
     intro x y hne
@@ -236,6 +241,7 @@ def Antisymmetric.toConnex {α} (r : α → α → Prop) [WeaklyComplementedRel 
     apply hne
     exact Antisymmetric.antisymm hxy hyx
 
+@[implicit_reducible]
 def Connex.toComparison {α} (r : α → α → Prop) [ComplementedEq α] [Connex r] [Transitive r] : Comparison r where
   compare := by
     intro x y hxy z
