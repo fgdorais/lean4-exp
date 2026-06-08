@@ -15,7 +15,8 @@ theorem cast_eq_dcast (h : α = β) (t : α) : cast h t = dcast (motive:=id) h t
 theorem Eq.ndrec_eq_dcast {motive : α → Sort _} (h : a = b) (t : motive a) :
     Eq.ndrec t h = dcast h t := rfl
 
-@[simp, elim_cast]
+set_option warning.simp.varHead false in
+@[elim_cast]
 theorem congr_dcast {β : α → Sort _} (f : (x : α) → β x → γ) (h : x = x') (y : β x) :
     f x' (dcast h y) = f x y := congr_ndrec ..
 

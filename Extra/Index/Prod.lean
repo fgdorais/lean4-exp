@@ -1,5 +1,5 @@
 import Extra.Index.Basic
-import Extra.Index.Bind
+import Extra.Index.FlatMap
 import Extra.Index.Map
 
 namespace List
@@ -8,19 +8,19 @@ namespace Index
 variable {α β} {xs : List α} {ys : List β}
 
 def prod : Index xs × Index ys → Index (List.product xs ys)
-| (i,j) => Index.bind (λ x => ys.map (Prod.mk x)) ⟨i, j.map (Prod.mk i.val)⟩
+| (i,j) => Index.flatMap (λ x => ys.map (Prod.mk x)) ⟨i, j.map (Prod.mk i.val)⟩
 
 def unprod (k : Index (List.product xs ys)) : Index xs × Index ys :=
-  match unbind (λ x => ys.map (Prod.mk x)) k with
+  match unFlatMap (λ x => ys.map (Prod.mk x)) k with
   | ⟨i,j⟩ => (i, j.unmap (Prod.mk i.val))
 
 theorem unprod_prod (i : Index xs × Index ys) : unprod (prod i) = i := by
   simp only [prod, unprod]
-  rw [unbind_bind, unmap_map]
+  rw [unFlatMap_flatMap, unmap_map]
 
 theorem prod_unprod (k : Index (List.product xs ys)) : prod (unprod k) = k := by
   simp only [prod, unprod]
-  rw [map_unmap, bind_unbind]
+  rw [map_unmap, flatMap_unFlatMap]
 
 theorem prod_eq_iff_eq_unprod (i : Index xs × Index ys) (k : Index (List.product xs ys)) : prod i = k ↔ i = unprod k := by
   constructor
@@ -43,7 +43,7 @@ def prodEquiv (xs ys : List α) : Equiv (Index xs × Index ys) (Index (List.prod
 
 set_option backward.isDefEq.respectTransparency false in
 theorem val_prod (i : Index xs × Index ys) : (prod i).val = (i.fst.val, i.snd.val) := by
-  rw [prod, val_bind, val_map]
+  rw [prod, val_flatMap, val_map]
 
 theorem val_unprod (i : Index (List.product xs ys)) : ((unprod i).fst.val, (unprod i).snd.val) = i.val := by
   rw [←prod_unprod i, val_prod, unprod_prod]

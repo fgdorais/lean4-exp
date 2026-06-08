@@ -19,6 +19,7 @@ local notation "𝟙" => s.one
 
 class UnitalRing : Prop extends Ring (no_index s.toRingSig), UnitalSemiring (no_index s.toUnitalRigSig.toUnitalSemiringSig)
 
+@[implicit_reducible]
 protected def UnitalRing.infer [OpAssoc s.add] [OpComm s.add] [OpRightInv s.add s.neg s.zero] [OpRightId s.add s.zero] [OpAssoc s.mul] [OpLeftDistrib s.mul s.add] [OpRightDistrib s.mul s.add] [OpLeftId s.mul s.one] [OpRightId s.mul s.one] : UnitalRing s where
   add_assoc := op_assoc _
   add_comm := op_comm _
@@ -42,6 +43,7 @@ end UnitalRing
 
 class UnitalCommRing : Prop extends CommRing (no_index s.toRingSig), UnitalCommSemiring (no_index s.toUnitalRigSig.toUnitalSemiringSig)
 
+@[implicit_reducible]
 protected def UnitalCommRing.infer [OpAssoc s.add] [OpComm s.add] [OpRightInv s.add s.neg s.zero] [OpRightId s.add s.zero] [OpAssoc s.mul] [OpComm s.mul] [OpRightDistrib s.mul s.add] [OpRightId s.mul s.one] : UnitalCommRing s where
   add_assoc := op_assoc _
   add_comm := op_comm _

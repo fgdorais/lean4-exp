@@ -9,6 +9,7 @@ namespace Logic
 /-! ## Decidable Propositions -/
 
 /-- Find a `Decidable` instance for a given proposition -/
+@[implicit_reducible]
 def inferDecidable (a : Prop) [inst : Decidable a] := inst
 
 set_option checkBinderAnnotations false in
@@ -23,6 +24,7 @@ def DecidableList.head (a as) : [DecidableList (a :: as)] → Decidable a
 | instCons .. => inferInstance
 
 /-- Tail of a `DecidableList` -/
+@[implicit_reducible]
 def DecidableList.tail (a as) : [DecidableList (a :: as)] → DecidableList as
 | instCons .. => inferInstance
 
@@ -45,6 +47,7 @@ abbrev StableRel {α β} (r : α → β → Prop) := (x : α) → (y : β) → S
 abbrev StableEq (α) := StableRel (@Eq α)
 
 /-- Find a `Stable` instance for a given proposition -/
+@[implicit_reducible]
 def inferStable (a : Prop) [inst : Stable a] := inst
 
 /-- Double Negation Elimination (DNE) -/
@@ -73,10 +76,12 @@ class inductive StableList : List Prop → Prop
 attribute [instance] StableList.instNil StableList.instCons
 
 /-- Head of a `StableList` -/
+@[implicit_reducible]
 def StableList.head (a as) : [StableList (a :: as)] → Stable a
 | instCons .. => inferInstance
 
 /-- Tail of a `StableList` -/
+@[implicit_reducible]
 def StableList.tail (a as) : [StableList (a :: as)] → StableList as
 | instCons .. => inferInstance
 
@@ -90,12 +95,15 @@ instance StableList.instMap (a : α → Prop) [StablePred a] : (xs : List α) �
 class Complemented (a : Prop) : Prop where intro :: elim : a ∨ ¬a
 
 /-- True propositions are complemented -/
+@[implicit_reducible]
 def Complemented.isTrue (h : a) : Complemented a := intro (.inl h)
 
 /-- False propositions are complemented -/
+@[implicit_reducible]
 def Complemented.isFalse (h : ¬a) : Complemented a := intro (.inr h)
 
 /-- Find a `Complemented` instance for a given proposition -/
+@[implicit_reducible]
 def inferComplemented (a : Prop) [inst : Complemented a] := inst
 
 /-- Law of Excluded Middle (EM) -/
@@ -135,10 +143,12 @@ class inductive ComplementedList : List Prop → Prop
 attribute [instance] ComplementedList.instNil ComplementedList.instCons
 
 /-- Head of a `ComplementedList` -/
+@[implicit_reducible]
 protected def ComplementedList.head (a as) : [ComplementedList (a :: as)] → Complemented a
 | instCons .. => inferInstance
 
 /-- Tail of a `ComplementedList` -/
+@[implicit_reducible]
 protected def ComplementedList.tail (a as) : [ComplementedList (a :: as)] → ComplementedList as
 | instCons .. => inferInstance
 
@@ -152,15 +162,18 @@ instance ComplementedList.instMap (a : α → Prop) [ComplementedPred a] : (xs :
 abbrev WeaklyComplemented (a : Prop) : Prop := Complemented (¬a)
 
 /-- Find a `WeaklyComplemented` instance for a given proposition -/
+@[implicit_reducible]
 def inferWeaklyComplemented (a : Prop) [inst : WeaklyComplemented a] := inst
 
 /-- Constructor abbreviation for `WeaklyComplemented` -/
 abbrev WeaklyComplemented.intro (h : ¬a ∨ ¬¬a) : WeaklyComplemented a := Complemented.intro h
 
 /-- False propositions are weakly complemented -/
+@[implicit_reducible]
 def WeaklyComplemented.isFalse (h : ¬a) : WeaklyComplemented a := intro (.inl h)
 
 /-- Irrefutable propositions are weakly complemented -/
+@[implicit_reducible]
 def WeaklyComplemented.isIrrefutable (h : ¬¬a) : WeaklyComplemented a := intro (.inr h)
 
 /-- Weak Excluded Middle (WEM) -/
@@ -201,10 +214,12 @@ class inductive WeaklyComplementedList : List Prop → Prop
 attribute [instance] WeaklyComplementedList.instNil WeaklyComplementedList.instCons
 
 /-- Head of a `WeaklyComplementedList` -/
+@[implicit_reducible]
 protected def WeaklyComplementedList.head (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplemented a
 | instCons .. => inferInstance
 
 /-- Tail of a `WeaklyComplementedList` -/
+@[implicit_reducible]
 protected def WeaklyComplementedList.tail (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplementedList as
 | instCons .. => inferInstance
 

@@ -17,6 +17,7 @@ class Group : Prop extends Semigroup (no_index s.toSemigroupSig) where
   protected op_right_id (x) : x ⋆ e = x
   protected op_right_inv (x) : x ⋆ x⁻¹ = e
 
+@[implicit_reducible]
 protected def Group.infer [OpAssoc s.op] [OpRightInv s.op s.inv s.id] [OpRightId s.op s.id] : Group s where
   op_assoc := op_assoc _
   op_right_id := op_right_id _
@@ -53,6 +54,7 @@ end Group
 
 class CommGroup : Prop extends Group s, CommMonoid (no_index s.toMonoidSig)
 
+@[implicit_reducible]
 protected def CommGroup.infer [OpAssoc s.op] [OpComm s.op] [OpRightId s.op s.id] [OpRightInv s.op s.inv s.id] : CommGroup s where
   op_assoc := op_assoc _
   op_comm := op_comm _

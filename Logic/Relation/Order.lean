@@ -52,6 +52,7 @@ abbrev inferLinearQuasiorder [Transitive r] [Irreflexive r] [Comparison r] : Lin
 
 class abbrev LinearOrder : Prop := LinearQuasiorder r, Connex r
 
+@[implicit_reducible]
 def inferLinearOrder [Transitive r] [Irreflexive r] [Comparison r] [Connex r] : LinearOrder r := .mk
 
 namespace Preorder

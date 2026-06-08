@@ -2,17 +2,14 @@ import Extra.Index.Basic
 
 namespace List
 
-theorem reverseAux_step (z : α) (xs ys : List α) :
-  List.reverseAux (z :: xs) ys = List.reverseAux xs (z :: ys) := rfl
-
 namespace Index
 
 @[inline]
 def reverseAux : {xs ys : List α} → Sum (Index xs) (Index ys) → Index (List.reverseAux xs ys)
   | [], _, .inr j => j
-  | x :: xs, ys, .inl .head => (List.reverseAux_step x xs ys).symm ▸ reverseAux (.inr .head)
-  | x :: xs, ys, .inl (.tail i) => (List.reverseAux_step x xs ys).symm ▸ reverseAux (.inl i)
-  | x :: xs, ys, .inr j => (List.reverseAux_step x xs ys).symm ▸ reverseAux (.inr (.tail j))
+  | _ :: _, _, .inl .head => reverseAux_cons.symm ▸ reverseAux (.inr .head)
+  | _ :: _, _, .inl (.tail i) => reverseAux_cons.symm ▸ reverseAux (.inl i)
+  | _ :: _, _, .inr j => reverseAux_cons.symm ▸ reverseAux (.inr (.tail j))
 
 @[inline]
 def reverse {xs : List α} (i : Index xs) : Index xs.reverse := reverseAux (.inl i)

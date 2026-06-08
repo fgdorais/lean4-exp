@@ -7,7 +7,6 @@ import Algebra.Theories.Monoid
 import Algebra.Reflection.Semigroup
 
 open List
-open Logic
 
 namespace Algebra.Monoid
 
@@ -20,7 +19,7 @@ variable {α} {xs : List α}
 
 instance instDecidableEq : DecidableEq (Expr xs)
 | ofSemigroup a, ofSemigroup b =>
-  match inferDecidable (a = b) with
+  match (inferInstance : Decidable (a = b)) with
   | isTrue rfl => isTrue rfl
   | isFalse h => isFalse fun | rfl => h rfl
 | ofSemigroup _, id => Decidable.isFalse (by grind only)

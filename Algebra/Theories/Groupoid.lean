@@ -13,6 +13,7 @@ class Groupoid (s : GroupoidSig β) : Prop where
   protected dop_right_id {{a b}} (x : β a b) : s.op x s.id = x
   protected dop_right_inv {{a b}} (x : β a b) : s.op x (s.inv x) = s.id
 
+@[implicit_reducible]
 protected def Groupoid.infer (s : GroupoidSig β) [DOpAssoc s.op] [DOpRightId s.op s.id] [DOpRightInv s.op s.inv s.id] : Groupoid s where
   dop_assoc := dop_assoc _
   dop_right_id := dop_right_id _

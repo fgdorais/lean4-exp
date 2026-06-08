@@ -1,8 +1,10 @@
 import Extra.Index.Basic
-import Extra.Index.Bind
+import Extra.Index.FlatMap
 import Extra.Index.Map
 
 namespace List
+
+#exit
 
 protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
 | [] => [(nomatch .)]
@@ -13,20 +15,20 @@ variable {α} {β : α → Type _} {f : (x : α) → List (β x)} {xs : List α}
 
 def pi : {xs : List α} → ((i : Index xs) → Index (f i.val)) → Index (xs.pi f)
 | [], _ => head
-| _::_, y => bind _ ⟨pi fun i => y i.tail, map _ (y head)⟩
+| _::_, y => flatMap _ ⟨pi fun i => y i.tail, map _ (y head)⟩
 
 def unpi : {xs : List α} → (Index (xs.pi f)) → (i : Index xs) → Index (f i.val)
 | _::_, k, head =>
-  match unbind _ k with | ⟨_, k⟩ => unmap _ k
+  match unFlatMap _ k with | ⟨_, k⟩ => unmap _ k
 | _::_, k, tail i =>
-  match unbind _ k with | ⟨k, _⟩ => unpi k i
+  match unFlatMap _ k with | ⟨k, _⟩ => unpi k i
 
 set_option backward.isDefEq.respectTransparency false in
 theorem unpi_pi (h : (i : Index xs) → Index (f i.val)) : unpi (pi h) = h := by
   funext i
   induction i with
-  | head => simp only [pi, unpi]; rw [unbind_bind, unmap_map]
-  | tail i ih => simp only [pi, unpi]; rw [unbind_bind, ih]
+  | head => simp only [pi, unpi]; rw [unFlatMap_flatMap, unmap_map]
+  | tail i ih => simp only [pi, unpi]; rw [unFlatMap_flatMap, ih]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem pi_unpi (k : Index (xs.pi f)) : pi (unpi k) = k := by
@@ -36,12 +38,12 @@ theorem pi_unpi (k : Index (xs.pi f)) : pi (unpi k) = k := by
     · rfl
     · contradiction
   | cons x xs ih =>
-    match h : unbind _ k with
+    match h : unFlatMap _ k with
     | ⟨k₁,k₂⟩ =>
-      rw [unbind_eq_iff_eq_bind] at h
+      rw [unFlatMap_eq_iff_eq_flatMap] at h
       cases h
       simp only [pi, unpi]
-      rw [unbind_bind, ih, map_unmap]
+      rw [unFlatMap_flatMap, ih, map_unmap]
 
 theorem pi_eq_iff_eq_unpi (h : (i : Index xs) → Index (f i.val)) (k : Index (xs.pi f)) : pi h = k ↔ h = unpi k := by
   constructor

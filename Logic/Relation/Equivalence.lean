@@ -74,6 +74,7 @@ instance [Apartness r] : Equivalence (¬ r . .) where
     | .inl hyx => nxy (Symmetric.symm hyx)
     | .inr hxz => nxz hxz
 
+@[implicit_reducible]
 def Equivalence.toApartness [Equivalence r] [ComplementedRel r] : Apartness (¬ r . .) where
   refl x h := h (Reflexive.refl x)
   symm nxy hyx := nxy (Symmetric.symm hyx)

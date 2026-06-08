@@ -16,6 +16,7 @@ class Monoid : Prop extends Semigroup (no_index s.toSemigroupSig) where
   protected op_left_id (x) : e ⋆ x = x
   protected op_right_id (x) : x ⋆ e = x
 
+@[implicit_reducible]
 protected def Monoid.infer [OpAssoc s.op] [OpLeftId s.op s.id] [OpRightId s.op s.id] : Monoid s where
   op_assoc := op_assoc _
   op_left_id := op_left_id _
@@ -37,6 +38,7 @@ end Monoid
 class CommMonoid : Prop extends CommSemigroup (no_index s.toSemigroupSig) where
   protected op_right_id (x) : x ⋆ e = x
 
+@[implicit_reducible]
 protected def CommMonoid.infer [OpAssoc s.op] [OpComm s.op] [OpRightId s.op s.id] : CommMonoid s where
   op_assoc := op_assoc _
   op_comm := op_comm _
@@ -58,6 +60,7 @@ end CommMonoid
 
 class CancelMonoid : Prop extends Monoid s, CancelSemigroup (no_index s.toSemigroupSig)
 
+@[implicit_reducible]
 protected def CancelMonoid.infer [OpAssoc s.op] [OpLeftId s.op s.id] [OpRightId s.op s.id] [OpLeftCancel s.op] [OpRightCancel s.op] : CancelMonoid s where
   op_assoc := op_assoc _
   op_left_id := op_left_id _
@@ -77,6 +80,7 @@ end CancelMonoid
 
 class CancelCommMonoid : Prop extends CommMonoid s, CancelCommSemigroup (no_index s.toSemigroupSig)
 
+@[implicit_reducible]
 protected def CancelCommMonoid.infer [OpAssoc s.op] [OpComm s.op] [OpRightId s.op s.id] [OpRightCancel s.op] : CancelCommMonoid s where
   op_assoc := op_assoc _
   op_comm := op_comm _

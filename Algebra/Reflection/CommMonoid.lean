@@ -5,8 +5,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 import Algebra.Instances
 import Algebra.Theories.Monoid
 
-open Logic
-
 namespace Algebra.CommMonoid
 
 inductive Expr {α : Type _} : List α → Type _
@@ -18,7 +16,7 @@ namespace Expr
 instance instDecidableEq {α} : {xs : List α} → DecidableEq (Expr xs)
 | [], nil, nil => Decidable.isTrue rfl
 | _::_, cons m a, cons n b =>
-  match instDecidableEq a b, inferDecidable (m = n) with
+  match instDecidableEq a b, (inferInstance : Decidable (m = n)) with
   | isTrue rfl, isTrue rfl => isTrue rfl
   | isFalse h, _ => isFalse fun | rfl => h rfl
   | _, isFalse h => isFalse fun | rfl => h rfl
