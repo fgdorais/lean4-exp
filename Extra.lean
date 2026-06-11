@@ -24,4 +24,5 @@ public import Extra.Rat
 public import Extra.Sigma
 public import Extra.Tactic
 public import Extra.Trans
+public import Extra.UNum
 public import Extra.Vector
