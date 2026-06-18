@@ -24,7 +24,6 @@ jobs:
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/nightly-testing/lean-toolchain"
-          NEW_TAG=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
 
       - name: install toolchain
         uses: leanprover/lean-action@v1
@@ -35,5 +34,6 @@ jobs:
         run: |
           lake update batteries
           git add lean-toolchain lake-manifest.json
+          NEW_TAG=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
           git commit -m "chore: update toolchain $NEW_TAG"
           git push origin nightly-testing
