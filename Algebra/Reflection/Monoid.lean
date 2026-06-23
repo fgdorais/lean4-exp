@@ -92,7 +92,7 @@ class Reflect (s : MonoidSig α) (x : α) (xs : List α) where
   expr : Expr xs
   eval_eq : expr.eval s = x
 
-protected def Reflect.eq {α} (s : MonoidSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
+protected theorem Reflect.eq {α} (s : MonoidSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
 
 namespace Reflect
 variable {α} (s : MonoidSig α) [Monoid s]

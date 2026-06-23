@@ -82,7 +82,7 @@ class Reflect (s : SemigroupSig α) (x : α) (xs : List α) where
   expr : Expr xs
   eval_eq : expr.eval s = x
 
-protected def Reflect.eq (s : SemigroupSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
+protected theorem Reflect.eq (s : SemigroupSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
 
 namespace Reflect
 variable (s : SemigroupSig α) [Semigroup s]

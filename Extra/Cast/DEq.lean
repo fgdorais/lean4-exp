@@ -10,12 +10,12 @@ inductive DEq {β : α → Sort _} : {a₁ a₂ : α} → β a₁ → β a₂ �
   | protected refl (x : β a) : DEq x x
 
 /-- Non-dependent recursor for dependent equality -/
-protected def DEq.ndrec {β : α → Sort _} {motive : {a : α} → β a → Prop} {x₁ : β a₁} {x₂ : β a₂} :
+protected theorem DEq.ndrec {β : α → Sort _} {motive : {a : α} → β a → Prop} {x₁ : β a₁} {x₂ : β a₂} :
     DEq x₁ x₂ → motive x₁ → motive x₂
   | .refl _, h => h
 
 @[match_pattern, inherit_doc DEq.refl]
-protected def DEq.rfl {β : α → Sort _} {x : β a} := DEq.refl x
+protected abbrev DEq.rfl {β : α → Sort _} {x : β a} : DEq x x := DEq.refl x
 
 /-- Symmetry for dependent equality -/
 protected theorem DEq.symm {β : α → Sort _} {x₁ : β a₁} {x₂ : β a₂} : DEq x₁ x₂ → DEq x₂ x₁

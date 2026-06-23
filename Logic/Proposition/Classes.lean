@@ -47,8 +47,7 @@ abbrev StableRel {α β} (r : α → β → Prop) := (x : α) → (y : β) → S
 abbrev StableEq (α) := StableRel (@Eq α)
 
 /-- Find a `Stable` instance for a given proposition -/
-@[implicit_reducible]
-def inferStable (a : Prop) [inst : Stable a] := inst
+theorem inferStable (a : Prop) [inst : Stable a] : Stable a := inst
 
 /-- Double Negation Elimination (DNE) -/
 theorem Stable.dne (a : Prop) [Stable a] : ¬¬a → a := Stable.elim
@@ -57,11 +56,11 @@ theorem Stable.dne (a : Prop) [Stable a] : ¬¬a → a := Stable.elim
 theorem Stable.by_contradiction [Stable a] : ¬¬a → a := Stable.elim
 
 /-- Proof by contrapositive for a stable implication -/
-def Stable.by_contrapositive [Stable b] : (¬b → ¬a) → (a → b) :=
+theorem Stable.by_contrapositive [Stable b] : (¬b → ¬a) → (a → b) :=
   fun h ha => Stable.by_contradiction fun hnb => h hnb ha
 
 /-- Proof by no counterexamples for a stable universal -/
-def Stable.by_no_counterexample {a : α → Prop} [StablePred a] : ¬(∃ x, ¬a x) → (∀ x, a x) :=
+theorem Stable.by_no_counterexample {a : α → Prop} [StablePred a] : ¬(∃ x, ¬a x) → (∀ x, a x) :=
   fun h x => Stable.by_contradiction fun hx => h ⟨x, hx⟩
 
 /-- Pierces's law for stable propositions -/
@@ -76,13 +75,11 @@ class inductive StableList : List Prop → Prop
 attribute [instance] StableList.instNil StableList.instCons
 
 /-- Head of a `StableList` -/
-@[implicit_reducible]
-def StableList.head (a as) : [StableList (a :: as)] → Stable a
+theorem StableList.head (a as) : [StableList (a :: as)] → Stable a
 | instCons .. => inferInstance
 
 /-- Tail of a `StableList` -/
-@[implicit_reducible]
-def StableList.tail (a as) : [StableList (a :: as)] → StableList as
+theorem StableList.tail (a as) : [StableList (a :: as)] → StableList as
 | instCons .. => inferInstance
 
 instance StableList.instMap (a : α → Prop) [StablePred a] : (xs : List α) → StableList (xs.map a)
@@ -95,16 +92,13 @@ instance StableList.instMap (a : α → Prop) [StablePred a] : (xs : List α) �
 class Complemented (a : Prop) : Prop where intro :: elim : a ∨ ¬a
 
 /-- True propositions are complemented -/
-@[implicit_reducible]
-def Complemented.isTrue (h : a) : Complemented a := intro (.inl h)
+theorem Complemented.isTrue (h : a) : Complemented a := intro (.inl h)
 
 /-- False propositions are complemented -/
-@[implicit_reducible]
-def Complemented.isFalse (h : ¬a) : Complemented a := intro (.inr h)
+theorem Complemented.isFalse (h : ¬a) : Complemented a := intro (.inr h)
 
 /-- Find a `Complemented` instance for a given proposition -/
-@[implicit_reducible]
-def inferComplemented (a : Prop) [inst : Complemented a] := inst
+theorem inferComplemented (a : Prop) [inst : Complemented a] : Complemented a := inst
 
 /-- Law of Excluded Middle (EM) -/
 theorem Complemented.em (a : Prop) [Complemented a] : a ∨ ¬a := Complemented.elim
@@ -115,13 +109,13 @@ inductive Complemented.Cases (a : Prop) : Prop
 | isFalse : ¬a → Cases a
 
 /-- Cases view of a complemented proposition -/
-def Complemented.byCases (a : Prop) [Complemented a] : Cases a :=
+theorem Complemented.byCases (a : Prop) [Complemented a] : Cases a :=
   match em a with
   | .inl h => .isTrue h
   | .inr h => .isFalse h
 
 /-- Proof by cases for complemented propositions -/
-def Complemented.by_cases (a : Prop) [Complemented a] {motive : Prop} (isTrue : a → motive) (isFalse : ¬a → motive) : motive :=
+theorem Complemented.by_cases (a : Prop) [Complemented a] {motive : Prop} (isTrue : a → motive) (isFalse : ¬a → motive) : motive :=
   match byCases a with
   | .isTrue h => isTrue h
   | .isFalse h => isFalse h
@@ -143,13 +137,11 @@ class inductive ComplementedList : List Prop → Prop
 attribute [instance] ComplementedList.instNil ComplementedList.instCons
 
 /-- Head of a `ComplementedList` -/
-@[implicit_reducible]
-protected def ComplementedList.head (a as) : [ComplementedList (a :: as)] → Complemented a
+protected theorem ComplementedList.head (a as) : [ComplementedList (a :: as)] → Complemented a
 | instCons .. => inferInstance
 
 /-- Tail of a `ComplementedList` -/
-@[implicit_reducible]
-protected def ComplementedList.tail (a as) : [ComplementedList (a :: as)] → ComplementedList as
+protected theorem ComplementedList.tail (a as) : [ComplementedList (a :: as)] → ComplementedList as
 | instCons .. => inferInstance
 
 instance ComplementedList.instMap (a : α → Prop) [ComplementedPred a] : (xs : List α) → ComplementedList (xs.map a)
@@ -162,19 +154,16 @@ instance ComplementedList.instMap (a : α → Prop) [ComplementedPred a] : (xs :
 abbrev WeaklyComplemented (a : Prop) : Prop := Complemented (¬a)
 
 /-- Find a `WeaklyComplemented` instance for a given proposition -/
-@[implicit_reducible]
-def inferWeaklyComplemented (a : Prop) [inst : WeaklyComplemented a] := inst
+theorem inferWeaklyComplemented (a : Prop) [inst : WeaklyComplemented a] : WeaklyComplemented a := inst
 
 /-- Constructor abbreviation for `WeaklyComplemented` -/
 abbrev WeaklyComplemented.intro (h : ¬a ∨ ¬¬a) : WeaklyComplemented a := Complemented.intro h
 
 /-- False propositions are weakly complemented -/
-@[implicit_reducible]
-def WeaklyComplemented.isFalse (h : ¬a) : WeaklyComplemented a := intro (.inl h)
+theorem WeaklyComplemented.isFalse (h : ¬a) : WeaklyComplemented a := intro (.inl h)
 
 /-- Irrefutable propositions are weakly complemented -/
-@[implicit_reducible]
-def WeaklyComplemented.isIrrefutable (h : ¬¬a) : WeaklyComplemented a := intro (.inr h)
+theorem WeaklyComplemented.isIrrefutable (h : ¬¬a) : WeaklyComplemented a := intro (.inr h)
 
 /-- Weak Excluded Middle (WEM) -/
 theorem WeaklyComplemented.wem (a : Prop) [WeaklyComplemented a] : ¬a ∨ ¬¬a :=
@@ -186,13 +175,13 @@ inductive WeaklyComplemented.Cases (a : Prop) : Prop
 | isIrrefutable : ¬¬a → Cases a
 
 /-- Cases view of a weakly complemented proposition -/
-def WeaklyComplemented.byCases (a : Prop) [WeaklyComplemented a] : Cases a :=
+theorem WeaklyComplemented.byCases (a : Prop) [WeaklyComplemented a] : Cases a :=
   match wem a with
   | .inl h => .isFalse h
   | .inr h => .isIrrefutable h
 
 /-- Proof by cases for weakly complemented propositions -/
-def WeaklyComplemented.by_cases (a : Prop) [WeaklyComplemented a] {motive : Prop} (isFalse : ¬a → motive) (isIrrefutable : ¬¬a → motive) : motive :=
+theorem WeaklyComplemented.by_cases (a : Prop) [WeaklyComplemented a] {motive : Prop} (isFalse : ¬a → motive) (isIrrefutable : ¬¬a → motive) : motive :=
   match byCases a with
   | .isFalse h => isFalse h
   | .isIrrefutable h => isIrrefutable h
@@ -214,13 +203,11 @@ class inductive WeaklyComplementedList : List Prop → Prop
 attribute [instance] WeaklyComplementedList.instNil WeaklyComplementedList.instCons
 
 /-- Head of a `WeaklyComplementedList` -/
-@[implicit_reducible]
-protected def WeaklyComplementedList.head (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplemented a
+protected theorem WeaklyComplementedList.head (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplemented a
 | instCons .. => inferInstance
 
 /-- Tail of a `WeaklyComplementedList` -/
-@[implicit_reducible]
-protected def WeaklyComplementedList.tail (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplementedList as
+protected theorem WeaklyComplementedList.tail (a as) : [WeaklyComplementedList (a :: as)] → WeaklyComplementedList as
 | instCons .. => inferInstance
 
 instance WeaklyComplementedList.instMap (a : α → Prop) [WeaklyComplementedPred a] : (xs : List α) → WeaklyComplementedList (xs.map a)

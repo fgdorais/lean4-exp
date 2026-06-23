@@ -63,7 +63,7 @@ abbrev CountStateM (σ : Type _) := CountStateT σ Id
 instance (σ m) [Monad m] : Monad (CountStateT σ m) := inferInstanceAs (Monad (StateT _ _))
 
 /-- `CountStateT.run x s` runs the monad `x` with initial state `s` and starting counters zero. -/
-@[inline] protected def CountStateT.run [Monad m] (x : CountStateT σ m α) (s : σ) :
+@[inline] protected def CountStateT.run {σ α : Type u} [Monad m] (x : CountStateT σ m α) (s : σ) :
     m (α × σ × Nat × Nat) := x (s, 0, 0)
 
 /-- `CountStateM.run x s` runs the monad `x` with initial state `s` and starting counters zero. -/

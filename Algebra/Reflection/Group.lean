@@ -379,7 +379,7 @@ structure Expr (xs : List α) where
 namespace Expr
 variable {α} {xs : List α}
 
-protected def eq : {a b : Expr xs} → a.word = b.word → a = b
+protected theorem eq : {a b : Expr xs} → a.word = b.word → a = b
 | ⟨_,_⟩, ⟨_,_⟩, rfl => rfl
 
 instance (xs : List α) : DecidableEq (Expr xs)
@@ -461,7 +461,7 @@ class Reflect (s : GroupSig α) (x : α) (xs : List α) where
   expr : Expr xs
   eval_eq : expr.eval s = x
 
-protected def Reflect.eq (s : GroupSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
+protected theorem Reflect.eq (s : GroupSig α) (x xs) [inst : Reflect s x xs] : inst.expr.eval s = x := inst.eval_eq
 
 namespace Reflect
 variable (s : GroupSig α) [Group s]

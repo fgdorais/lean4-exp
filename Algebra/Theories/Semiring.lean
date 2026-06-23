@@ -18,8 +18,7 @@ class Semiring : Prop where
   protected mul_left_distrib (x y z) : x ⋆ (y ⊹ z) = x ⋆ y ⊹ x ⋆ z
   protected mul_right_distrib (x y z) : (x ⊹ y) ⋆ z = x ⋆ z ⊹ y ⋆ z
 
-@[implicit_reducible]
-protected def Semiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpLeftDistrib s.mul s.add] [OpRightDistrib s.mul s.add] : Semiring s where
+protected abbrev Semiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpLeftDistrib s.mul s.add] [OpRightDistrib s.mul s.add] : Semiring s where
   add_assoc := op_assoc _
   add_comm := op_comm _
   mul_assoc := op_assoc _
@@ -48,8 +47,7 @@ class CommSemiring : Prop where
   protected mul_comm (x y) : x ⋆ y = y ⋆ x
   protected mul_right_distrib (x y z) : (x ⊹ y) ⋆ z = x ⋆ z ⊹ y ⋆ z
 
-@[implicit_reducible]
-protected def CommSemiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpComm s.mul] [OpRightDistrib s.mul s.add] : CommSemiring s where
+protected abbrev CommSemiring.infer [OpAssoc s.add] [OpComm s.add] [OpAssoc s.mul] [OpComm s.mul] [OpRightDistrib s.mul s.add] : CommSemiring s where
   add_assoc := op_assoc _
   add_comm := op_comm _
   mul_assoc := op_assoc _
