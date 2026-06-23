@@ -12,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: git config
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-
       - name: checkout
         uses: actions/checkout@v6
         with:
           ref: nightly-testing
           token: ${{ secrets.EXP_PR_TOKEN }}
+
+      - name: git config
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
       - name: update lean-toolchain
         id: toolchain
