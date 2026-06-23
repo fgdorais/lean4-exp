@@ -5,7 +5,7 @@ name: Update Nightly Testing
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 * * * *'
+    - cron: '23 1/4 * * *'
 
 jobs:
   update-nightly-testing:
@@ -21,19 +21,27 @@ jobs:
       - name: update lean-toolchain
         id: toolchain-tag
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          OLD=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
+          echo "old=$OLD" >> $GITHUB_OUTPUT
           curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/nightly-testing/lean-toolchain"
+          NEW=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
+          echo "new=$NEW" >> $GITHUB_OUTPUT
 
       - name: install toolchain
+        if: ${{ steps.toolchain-tag.outputs.new != steps.toolchain-tag.outputs.old }}
         uses: leanprover/lean-action@v1
         with:
           auto-config: false
 
+      - name: update dependencies
+        if: ${{ steps.toolchain-tag.outputs.new != steps.toolchain-tag.outputs.old }}
+        run: lake update batteries
+
       - name: commit
+        if: ${{ steps.toolchain-tag.outputs.new != steps.toolchain-tag.outputs.old }}
         run: |
-          lake update batteries
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           git add lean-toolchain lake-manifest.json
-          NEW_TAG=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')
-          git commit -m "chore: update toolchain $NEW_TAG"
+          git commit -m "chore: update toolchain ${{ steps.toolchain-tag.outputs.new }}"
           git push origin nightly-testing
