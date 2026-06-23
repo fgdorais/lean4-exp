@@ -32,7 +32,7 @@ jobs:
           echo "name=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')" >> $GITHUB_OUTPUT
           # check if toolchain has been updated
           git fetch origin main --depth=1
-          if git diff --quiet main -- "lean-toolchain"; then
+          if git diff --quiet origin/main -- "lean-toolchain"; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
