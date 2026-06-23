@@ -17,7 +17,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: nightly-testing
-          fetch-depth: 0
 
       - name: git config
         run: |
@@ -46,11 +45,10 @@ jobs:
 
       - name: update dependencies
         if: steps.toolchain.outputs.changed == 'true'
-        run: lake update batteries
-
-      - name: prepare commit
-        if: steps.toolchain.outputs.changed == 'true'
-        run: git add lean-toolchain lake-manifest.json
+        run: |
+          git restore --source main lakefile.toml
+          lake update batteries
+          git add lean-toolchain lakefile.toml lake-manifest.json
 
       - name: create pull request
         if: steps.toolchain.outputs.changed == 'true'
