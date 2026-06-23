@@ -17,7 +17,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: nightly-testing
-          fetch-depth: 0
 
       - name: git config
         run: |
@@ -43,10 +42,11 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           auto-config: false # don't do anything
+          use-github-cache: false # no caching since we don't build
 
       - name: update dependencies
         if: steps.toolchain.outputs.changed == 'true'
-        run: lake update batteries
+        run: lake update --keep-toolchain batteries
 
       - name: prepare commit
         if: steps.toolchain.outputs.changed == 'true'
