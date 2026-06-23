@@ -19,8 +19,7 @@ instance (a : α → Prop) [ComplementedPred a] [Omniscient α] : Complemented (
   elim := Omniscient.elim a
 
 /-- Transfer weak omniscience to equivalent type -/
-@[implicit_reducible]
-def Omniscient.ofEquiv {α β} (e : Equiv α β) [Omniscient α] : Omniscient β where
+theorem Omniscient.ofEquiv {α β} (e : Equiv α β) [Omniscient α] : Omniscient β where
   elim a _ := by
     by_cases ∃ x, a (e.fwd x) using Complemented with
     | .isTrue ⟨x, _⟩ => left; exists e.fwd x
@@ -113,8 +112,7 @@ instance (a : α → Prop) [ComplementedPred a] [WeaklyOmniscient α] : WeaklyCo
     | .inr h => .inr fun h' => h (not_exists.1 h')
 
 /-- Transfer weak omniscience to equivalent type -/
-@[implicit_reducible]
-def WeaklyOmniscient.ofEquiv {α β} (e : Equiv α β) [WeaklyOmniscient α] : WeaklyOmniscient β where
+theorem WeaklyOmniscient.ofEquiv {α β} (e : Equiv α β) [WeaklyOmniscient α] : WeaklyOmniscient β where
   elim a _ := by
     by_cases ∀ x, a (e.fwd x) using Complemented with
     | .isTrue h => left; intro y; rw [←e.fwd_rev y]; exact h ..
@@ -167,8 +165,7 @@ instance (a : α → Prop) [Markovian α] [ComplementedPred a] : Stable (∃ x, 
   Stable.intro (Markovian.elim a)
 
 /-- Transfer Markov property to equivalent type -/
-@[implicit_reducible]
-def Markovian.ofEquiv {α β} (e : Equiv α β) [Markovian α] : Markovian β where
+theorem Markovian.ofEquiv {α β} (e : Equiv α β) [Markovian α] : Markovian β where
   elim a _ h := by
     have : ¬¬∃ x, a (e.fwd x) := by
       intro hx

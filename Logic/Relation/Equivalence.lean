@@ -43,7 +43,7 @@ protected theorem trans {x y z} : r x y → r y z → r x z := Transitive.trans
 
 end Equivalence
 
-protected def Equivalence.to_eqv [Equivalence r] : _root_.Equivalence r where
+protected theorem Equivalence.to_eqv [Equivalence r] : _root_.Equivalence r where
   refl := Reflexive.refl
   symm := Symmetric.symm
   trans := Transitive.trans
@@ -74,8 +74,7 @@ instance [Apartness r] : Equivalence (¬ r . .) where
     | .inl hyx => nxy (Symmetric.symm hyx)
     | .inr hxz => nxz hxz
 
-@[implicit_reducible]
-def Equivalence.toApartness [Equivalence r] [ComplementedRel r] : Apartness (¬ r . .) where
+theorem Equivalence.toApartness [Equivalence r] [ComplementedRel r] : Apartness (¬ r . .) where
   refl x h := h (Reflexive.refl x)
   symm nxy hyx := nxy (Symmetric.symm hyx)
   compare {x y} (nxy z) := by
