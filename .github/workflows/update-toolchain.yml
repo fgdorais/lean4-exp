@@ -5,7 +5,7 @@ name: Update Toolchain
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 3 * * *'
+    - cron: '15 1/8 * * *'
 
 jobs:
   update-toolchain:
