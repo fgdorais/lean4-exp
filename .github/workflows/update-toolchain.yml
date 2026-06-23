@@ -28,7 +28,7 @@ jobs:
         run: |
           # get toolchain from batteries/main
           curl -L -O "https://raw.githubusercontent.com/leanprover-community/batteries/main/lean-toolchain"
-          echo "name=$(cut -d ':' -f2 lean-toolchain | tr -d '\n') >> $GITHUB_OUTPUT
+          echo "name=$(cut -d ':' -f2 lean-toolchain | tr -d '\n')" >> $GITHUB_OUTPUT
           # check if toolchain has been updated
           if git diff --quiet origin/main -- "lean-toolchain"; then
             echo "changed=false" >> $GITHUB_OUTPUT
