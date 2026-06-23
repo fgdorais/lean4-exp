@@ -5,7 +5,7 @@ name: Update Toolchain
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 3 * * *'
+    - cron: '15 1/8 * * *'
 
 jobs:
   update-toolchain:
@@ -42,13 +42,15 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           auto-config: false # don't do anything
+          use-github-cache: false # no caching since we don't build
 
       - name: update dependencies
         if: steps.toolchain.outputs.changed == 'true'
-        run: |
-          git restore --source main lakefile.toml
-          lake update batteries
-          git add lean-toolchain lakefile.toml lake-manifest.json
+        run: lake update --keep-toolchain batteries
+
+      - name: prepare commit
+        if: steps.toolchain.outputs.changed == 'true'
+        run: git add lean-toolchain lake-manifest.json
 
       - name: create pull request
         if: steps.toolchain.outputs.changed == 'true'
