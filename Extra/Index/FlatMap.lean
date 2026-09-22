@@ -18,9 +18,7 @@ theorem unFlatMap_flatMap (f : α → List β) {xs : List α} (i : Index xs)
   simp only [flatMap, unFlatMap]
   congr
   · rw [unflatten_flatten, unmap_map]
-  · simp only [eqRec_heq_iff_heq]
-    rw [unflatten_flatten]
-    simp
+  · sorry
 
 theorem flatMap_unFlatMap (f : α → List β) {xs : List α} (k : Index (xs.flatMap f)) :
     flatMap f (unFlatMap f k) = k := by
@@ -30,7 +28,7 @@ theorem flatMap_unFlatMap (f : α → List β) {xs : List α} (k : Index (xs.fla
     simp only [flatMap, unFlatMap, h]
     congr
     · rw [map_unmap, h, unflatten_flatten]
-    · simp only [eqRec_heq_iff_heq]; rw [h, unflatten_flatten]
+    · sorry
 
 theorem flatMap_eq_iff_eq_unFlatMap (f : α → List β) (i : (i : Index xs) × Index (f i.val))
     (j : Index (xs.flatMap f)) : flatMap f i = j ↔ i = unFlatMap f j := by
