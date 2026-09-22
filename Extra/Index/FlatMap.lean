@@ -15,20 +15,27 @@ def unFlatMap (f : α → List β) {xs : List α} (k : Index (xs.flatMap f)) :
 
 theorem unFlatMap_flatMap (f : α → List β) {xs : List α} (i : Index xs)
     (j : Index (f i.val)) : unFlatMap f (flatMap f ⟨i, j⟩) = ⟨i, j⟩ := by
-  simp only [flatMap, unFlatMap]
-  congr
-  · rw [unflatten_flatten, unmap_map]
-  · sorry
+  -- Unfold `flatMap` and `unFlatMap` in *separate* steps. Doing both in one
+  -- `simp only [flatMap, unFlatMap]` call leaves the `match` as `.fst`/`.snd`
+  -- projections; the transported proof then mentions the scrutinee, and
+  -- `unflatten_flatten` can no longer be rewritten ("motive is not type
+  -- correct"). Splitting the unfolding any way at all avoids this.
+  show unFlatMap f (flatten ⟨map f i, val_map f i ▸ j⟩) = ⟨i, j⟩
+  unfold unFlatMap
+  rw [unflatten_flatten]
+  simp [unmap_map]
 
 theorem flatMap_unFlatMap (f : α → List β) {xs : List α} (k : Index (xs.flatMap f)) :
     flatMap f (unFlatMap f k) = k := by
   match h : unflatten k with
   | ⟨i, j⟩ =>
+    unfold unFlatMap
+    rw [h]
     rw [unflatten_eq_iff_eq_flatten] at h
-    simp only [flatMap, unFlatMap, h]
-    congr
-    · rw [map_unmap, h, unflatten_flatten]
-    · sorry
+    subst h
+    unfold flatMap
+    congr 1
+    simp [map_unmap]
 
 theorem flatMap_eq_iff_eq_unFlatMap (f : α → List β) (i : (i : Index xs) × Index (f i.val))
     (j : Index (xs.flatMap f)) : flatMap f i = j ↔ i = unFlatMap f j := by
