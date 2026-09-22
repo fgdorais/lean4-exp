@@ -1,5 +1,6 @@
 import Extra.Array
 import Extra.Basic
+import Extra.BitSet
 import Extra.Cast
 import Extra.Control
 import Extra.CounterM
