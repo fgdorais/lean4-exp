@@ -7,7 +7,7 @@ module
 public import Extra.Basic
 public import Extra.Nat.Lemmas
 
-@[expose] public section
+public section
 
 namespace Nat
 

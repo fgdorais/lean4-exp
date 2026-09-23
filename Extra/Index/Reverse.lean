@@ -6,23 +6,23 @@ module
 
 public import Extra.Index.Basic
 
-@[expose] public section
+public section
 
 namespace List
 
 namespace Index
 
-@[inline]
+@[inline, expose]
 def reverseAux : {xs ys : List α} → Sum (Index xs) (Index ys) → Index (List.reverseAux xs ys)
   | [], _, .inr j => j
   | _ :: _, _, .inl .head => reverseAux_cons.symm ▸ reverseAux (.inr .head)
   | _ :: _, _, .inl (.tail i) => reverseAux_cons.symm ▸ reverseAux (.inl i)
   | _ :: _, _, .inr j => reverseAux_cons.symm ▸ reverseAux (.inr (.tail j))
 
-@[inline]
+@[inline, expose]
 def reverse {xs : List α} (i : Index xs) : Index xs.reverse := reverseAux (.inl i)
 
-@[inline]
+@[inline, expose]
 def unreverse {xs : List α} (i : Index xs.reverse) : Index xs := xs.reverse_reverse ▸ i.reverse
 
 /-- `reverseAux` on a reversed list is `++`. Stated at list level so that the
@@ -33,7 +33,7 @@ theorem reverse_reverseAux (xs ys : List α) :
     xs.reverse.reverseAux ys = List.append xs ys := by
   rw [List.reverseAux_eq, List.reverse_reverse]; rfl
 
-@[inline]
+@[inline, expose]
 def appendTR {xs ys : List α} : Sum (Index xs) (Index ys) → Index (List.append xs ys)
   | .inl i => reverse_reverseAux xs ys ▸ reverseAux (.inl i.reverse)
   | .inr j => reverse_reverseAux xs ys ▸ reverseAux (.inr j)

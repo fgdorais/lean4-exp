@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 
-@[expose] public section
+public section
 
 namespace Batteries
 
@@ -20,6 +20,7 @@ protected theorem ext : {a b : Object} → HEq a.val b.val → a = b
   | {..}, {..}, .rfl => rfl
 
 /-- Casts an `Object` to a value of compatible type. -/
+@[expose]
 protected def cast : (a : Object) → α = a.type → α
   | ⟨a⟩, rfl => a
 
@@ -55,17 +56,20 @@ structure ObjectArray (size : Nat) (type : Fin size → Type _) : Type _ where
 namespace ObjectArray
 
 /-- Constructs an `ObjectArray` using `init` as inital values. -/
+@[expose]
 protected def mk (init : (i : Fin size) → type i) : ObjectArray size type where
   data := Array.ofFn fun i => ⟨init i⟩
   size_eq := Array.size_ofFn ..
   type_eq _ := Array.getElem_ofFn .. ▸ rfl
 
 /-- Gets the `ObjectArray` item at index `i`. -/
+@[expose]
 protected def get (a : ObjectArray size type) (i : Fin size) : type i :=
   have : i < a.data.size := a.size_eq.symm ▸ i.is_lt
   a.data[i].cast (a.type_eq i).symm
 
 /-- Sets the `ObjectArray` item at index `i`. -/
+@[expose]
 protected def set (a : ObjectArray size type) (i : Fin size) (v : type i) : ObjectArray size type where
   data := a.data.set (i.cast a.size_eq.symm) ⟨v⟩
   size_eq := (Array.size_set ..).symm ▸ a.size_eq
@@ -133,6 +137,7 @@ theorem set_mk {type : Fin size → Type _} {init} (i : Fin size) (v : type i) :
 
 end ObjectArray
 
+@[expose]
 def foo : ObjectArray 3 fun | 0 => String | 1 => Nat | 2 => Float :=
   .mk fun
     | 0 => "foo"

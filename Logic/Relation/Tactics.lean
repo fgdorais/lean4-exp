@@ -6,7 +6,7 @@ module
 
 public import Logic.Relation.Classes
 
-@[expose] public section
+public section
 
 syntax "reflexivity" ("using" term:max)? : tactic
 macro_rules

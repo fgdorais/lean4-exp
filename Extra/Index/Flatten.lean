@@ -7,14 +7,16 @@ module
 public import Extra.Index.Basic
 public import Extra.Index.Append
 
-@[expose] public section
+public section
 
 namespace List.Index
 
+@[expose]
 def flatten : {xss : List (List α)} → (i : Index xss) × (Index i.val) → Index xss.flatten
   | _, ⟨head, j⟩ => append (.inl j)
   | _, ⟨tail i, j⟩ => append (.inr (flatten ⟨i, j⟩))
 
+@[expose]
 def unflatten : {xss : List (List α)} → Index xss.flatten → (i : Index xss) × (Index i.val)
   | _::_, k =>
     match unappend k with
@@ -51,6 +53,7 @@ theorem unflatten_eq_iff_eq_flatten {k : Index xss.flatten} {i : (i : Index xss)
   · intro h; rw [←h, flatten_unflatten]
   · intro h; rw [h, unflatten_flatten]
 
+@[expose]
 def flattenEquiv (xss : List (List α)) :
     Equiv ((i : Index xss) × Index i.val) (Index xss.flatten) where
   fwd := flatten

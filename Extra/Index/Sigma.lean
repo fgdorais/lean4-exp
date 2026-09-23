@@ -8,7 +8,7 @@ public import Extra.Index.Basic
 public import Extra.Index.Append
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 -- Set file-wide, not per declaration. With `set_option ... in` the option is
 -- applied unreliably when Lean elaborates declarations in parallel, and proofs
@@ -20,10 +20,12 @@ set_option backward.isDefEq.respectTransparency false
 
 namespace List.Index
 
+@[expose]
 def sigma : {xs : List α} → (i : Index xs) × Index (f i.val) → Index (xs.sigma f)
   | x::_, ⟨head, j⟩ => append (.inl (j.map (Sigma.mk x)))
   | _::_, ⟨tail i, j⟩ => append (.inr (sigma ⟨i, j⟩))
 
+@[expose]
 def unsigma : {xs : List α} → Index (xs.sigma f) → (i : Index xs) × Index (f i.val)
 | x::_, k =>
   match unappend k with
@@ -56,6 +58,7 @@ theorem unsigma_eq_iff_eq_sigma {β : α → Type _} {f : (x : α) → List (β 
   · intro h; cases h; rw [sigma_unsigma]
   · intro h; cases h; rw [unsigma_sigma]
 
+@[expose]
 def sigmaEquiv {β : α → Type _} (f : (x : α) → List (β x)) (xs : List α) : Equiv ((i : Index xs) × (Index (f i.val))) (Index (xs.sigma f)) where
   fwd := sigma
   rev := unsigma

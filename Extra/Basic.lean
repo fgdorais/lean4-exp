@@ -6,7 +6,7 @@ module
 
 public import Batteries
 
-@[expose] public section
+public section
 
 /-- Simp attribute for `elim_cast` tactic -/
 register_simp_attr elim_cast

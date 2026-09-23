@@ -6,6 +6,6 @@ module
 
 public import Extra.Basic
 
-@[expose] public section
+public section
 
 namespace Rat

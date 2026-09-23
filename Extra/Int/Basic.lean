@@ -6,7 +6,7 @@ module
 
 public import Extra.Basic
 
-@[expose] public section
+public section
 
 namespace Int
 
@@ -32,10 +32,13 @@ theorem succ_mk_succ (m n) : (m + 1 ⊖ n + 1) = (m ⊖ n) := by
   | 0 => rfl
   | _+1 => rfl
 
+@[expose]
 protected def recMk.{u} {motive : Int → Sort u} (mk : (m n : Nat) → motive (m ⊖ n)) : (i : Int) → motive i
 | Int.ofNat m => mk_zero m ▸ mk m 0
 | Int.negSucc n => mk 0 (n + 1)
 
+@[expose]
 protected def recMkOn.{u} {motive : Int → Sort u} (i : Int) (mk : (m n : Nat) → motive (m ⊖ n)) : motive i := Int.recMk mk i
 
+@[expose]
 protected def casesMkOn.{u} {motive : Int → Sort u} (i : Int) (mk : (m n : Nat) → motive (m ⊖ n)) : motive i := Int.recMk mk i
