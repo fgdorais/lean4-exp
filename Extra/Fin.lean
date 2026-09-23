@@ -6,3 +6,4 @@ module
 
 public import Extra.Fin.Basic
 public import Extra.Fin.Enum
+public import Extra.Fin.Sum
