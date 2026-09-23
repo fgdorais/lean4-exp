@@ -19,6 +19,7 @@ def unpi : {xs : List α} → (Index (xs.pi f)) → (i : Index xs) → Index (f 
 | _::_, k, head => unmap _ (unFlatMap _ k).snd
 | _::_, k, tail i => unpi (unFlatMap _ k).fst i
 
+set_option backward.isDefEq.respectTransparency false in
 theorem unpi_pi (h : (i : Index xs) → Index (f i.val)) : unpi (pi h) = h := by
   funext i
   induction i with
