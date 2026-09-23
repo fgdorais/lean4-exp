@@ -3,6 +3,9 @@ import Extra.Index.FlatMap
 import Extra.Index.Map
 import Extra.Index.Pi
 
+-- WORK IN PROGRESS: everything below is skipped and is NOT checked by the
+-- compiler. This file also cannot be imported (the truncated olean is
+-- rejected), and it depends on `Extra/Index/Pi.lean`, which is likewise parked.
 #exit
 
 namespace List

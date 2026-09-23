@@ -6,7 +6,6 @@ namespace List.Index
 def mapImpl (f : α → β) {xs : List α} (i : Index xs) : Index (xs.map f) :=
   Index.ofFin ⟨i.toNat, xs.length_map f ▸ i.toNat_lt_length⟩
 
-@[implemented_by mapImpl]
 def map (f : α → β) : {xs : List α} → Index xs → Index (xs.map f)
   | _, head => head
   | _, tail i => tail (map f i)
@@ -15,10 +14,43 @@ def map (f : α → β) : {xs : List α} → Index xs → Index (xs.map f)
 def unmapImpl (f : α → β) {xs : List α} (i : Index (xs.map f)) : Index xs :=
   Index.ofFin ⟨i.toNat, xs.length_map f ▸ i.toNat_lt_length⟩
 
-@[implemented_by unmapImpl]
 def unmap (f : α → β) : {xs : List α} → Index (xs.map f) → Index xs
   | _::_, head => head
   | _::_, tail i => tail (unmap f i)
+
+theorem toNat_map (f : α → β) {xs : List α} (i : Index xs) : (i.map f).toNat = i.toNat := by
+  induction i with
+  | head => rfl
+  | tail i ih => exact congrArg (· + 1) ih
+
+theorem toNat_unmap (f : α → β) {xs : List α} (i : Index (xs.map f)) :
+    (i.unmap f).toNat = i.toNat := by
+  induction xs with
+  | nil => contradiction
+  | cons x xs ih =>
+    match i with
+    | head => rfl
+    | tail i => exact congrArg (· + 1) (ih i)
+
+@[csimp]
+theorem map_eq_mapImpl : @map = @mapImpl := by
+  funext α β f xs i
+  show _ = Index.ofFin _
+  rw [← ofFin_toFin (map f i)]
+  congr 1
+  apply Fin.ext
+  show (map f i).toNat = i.toNat
+  exact toNat_map f i
+
+@[csimp]
+theorem unmap_eq_unmapImpl : @unmap = @unmapImpl := by
+  funext α β f xs i
+  show _ = Index.ofFin _
+  rw [← ofFin_toFin (unmap f i)]
+  congr 1
+  apply Fin.ext
+  show (unmap f i).toNat = i.toNat
+  exact toNat_unmap f i
 
 theorem unmap_map (f : α → β) {xs : List α} (i : Index xs) : (i.map f).unmap f = i := by
   induction i with

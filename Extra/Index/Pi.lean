@@ -4,6 +4,11 @@ import Extra.Index.Map
 
 namespace List
 
+-- WORK IN PROGRESS: everything below is skipped and is NOT checked by the
+-- compiler. `pi_unpi` does not go through -- `simp only [pi, unpi]` unfolds far
+-- enough that the induction hypothesis no longer matches, and `List.pi` is
+-- semireducible, so the goal ends up ill-typed at `implicit` transparency.
+-- Nothing here reaches the build: `Extra/Index.lean` does not import this file.
 #exit
 
 protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
@@ -23,12 +28,14 @@ def unpi : {xs : List α} → (Index (xs.pi f)) → (i : Index xs) → Index (f 
 | _::_, k, tail i =>
   match unFlatMap _ k with | ⟨k, _⟩ => unpi k i
 
+set_option backward.isDefEq.respectTransparency false in
 theorem unpi_pi (h : (i : Index xs) → Index (f i.val)) : unpi (pi h) = h := by
   funext i
   induction i with
   | head => simp only [pi, unpi]; rw [unFlatMap_flatMap, unmap_map]
   | tail i ih => simp only [pi, unpi]; rw [unFlatMap_flatMap, ih]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem pi_unpi (k : Index (xs.pi f)) : pi (unpi k) = k := by
   induction xs with
   | nil =>

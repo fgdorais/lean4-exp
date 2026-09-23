@@ -39,6 +39,18 @@ theorem iota_val {xs : List α} (i : Index xs.indexIota) : iota (val i) = i := b
     | head => rfl
     | tail i => rw [←map_unmap Index.tail i, val_tail, val_unmap Index.tail, iota, ih, map_unmap]
 
+theorem iota_eq_iff_eq_val {xs : List α} (i : Index xs) (k : Index xs.indexIota) :
+    iota i = k ↔ i = val k := by
+  constructor
+  · intro h; rw [←h, val_iota]
+  · intro h; rw [h, iota_val]
+
+theorem val_eq_iff_eq_iota {xs : List α} (k : Index xs.indexIota) (i : Index xs) :
+    val k = i ↔ k = iota i := by
+  constructor
+  · intro h; rw [←h, iota_val]
+  · intro h; rw [h, val_iota]
+
 def iotaEquiv (xs : List α) : Equiv (Index xs) (Index xs.indexIota) where
   fwd := iota
   rev := val

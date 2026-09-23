@@ -21,3 +21,21 @@ def unreverse {xs : List α} (i : Index xs.reverse) : Index xs := xs.reverse_rev
 def appendTR {xs ys : List α} : Sum (Index xs) (Index ys) → Index (List.append xs ys)
   | .inl i => List.append_eq_appendTR ▸ reverseAux (.inl i.reverse)
   | .inr j => List.append_eq_appendTR ▸ reverseAux (.inr j)
+
+/-- Transporting an index along an equality of lists does not change its value. -/
+theorem val_eq_of_heq {xs ys : List α} (h : xs = ys) (i : Index xs) : (h ▸ i).val = i.val := by
+  cases h; rfl
+
+theorem val_reverseAux {xs ys : List α} (k : Sum (Index xs) (Index ys)) :
+    (reverseAux k).val = k.elim val val := by
+  induction xs generalizing ys with
+  | nil => match k with
+    | .inr j => rfl
+  | cons x xs ih =>
+    match k with
+    | .inl head => simp only [reverseAux]; exact ih (.inr head)
+    | .inl (tail i) => simp only [reverseAux]; exact ih (.inl i)
+    | .inr j => simp only [reverseAux]; exact ih (.inr (tail j))
+
+theorem val_reverse {xs : List α} (i : Index xs) : i.reverse.val = i.val :=
+  val_reverseAux (.inl i)
