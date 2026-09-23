@@ -13,10 +13,10 @@ public section
 
 namespace List
 
--- `reducible` so that defeq can see through `List.pi` inside implicit type
--- arguments; without it `unpi_pi` and `pi_unpi` need
+-- `implicit_reducible` so that defeq can see through `List.pi` inside
+-- implicit type arguments; without it `unpi_pi` and `pi_unpi` need
 -- `backward.isDefEq.respectTransparency false`.
-@[reducible, expose] protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
+@[implicit_reducible, expose] protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
 | [] => [(nomatch .)]
 | x::xs => (List.pi f xs).flatMap fun ys => (f x).map fun y i => match i with | .head => y | .tail i => ys i
 
@@ -101,9 +101,9 @@ theorem val_pi {xs : List α} (y : (i : Index xs) → Index (f i.val)) :
   induction xs with
   | nil => funext i; cases i
   | cons x xs ih =>
-    -- `List.pi` is semireducible, so name it explicitly: otherwise the goal
-    -- carries `Index ((x::xs).pi f)` while `val_flatMap` expects
-    -- `Index (_.flatMap _)`.
+    -- `List.pi` does not unfold at `simp`'s transparency, so name it
+    -- explicitly: otherwise the goal carries `Index ((x::xs).pi f)` while
+    -- `val_flatMap` expects `Index (_.flatMap _)`.
     simp only [List.pi]
     rw [pi, val_flatMap, val_map]
     funext i
