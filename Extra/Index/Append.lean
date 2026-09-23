@@ -11,12 +11,44 @@ public import Extra.Index.Reverse
 
 namespace List.Index
 
-@[implemented_by appendTR]
 def append : {xs ys : List α} → Sum (Index xs) (Index ys) → Index (List.append xs ys)
   | [], _, .inr i => i
   | _::_, _, .inr i => tail (append (.inr i))
   | _::_, _, .inl head => head
   | _::_, _, .inl (tail i) => tail (append (.inl i))
+
+theorem toNat_append {xs ys : List α} (k : Sum (Index xs) (Index ys)) :
+    (append k).toNat = k.elim (fun i => i.toNat) (fun j => xs.length + j.toNat) := by
+  induction xs generalizing ys with
+  | nil => match k with
+    | .inr j => simp [append]
+  | cons x xs ih =>
+    match k with
+    | .inl head => rfl
+    | .inl (tail i) => exact congrArg (· + 1) (ih (.inl i))
+    | .inr j => exact (congrArg (· + 1) (ih (.inr j))).trans (by simp; omega)
+
+/-- The tail-recursive implementation agrees with `append`; this replaces an
+unverified `@[implemented_by]`. Both sides are compared by position, since an
+index is determined by its `toNat`. -/
+@[csimp]
+theorem append_eq_appendTR : @append = @appendTR := by
+  funext α xs ys k
+  apply eq_of_toNat_eq
+  rw [toNat_append]
+  match k with
+  | .inl i =>
+    unfold appendTR
+    simp only [Sum.elim_inl]
+    rw [toNat_eq_of_heq, toNat_reverseAux]
+    simp only [Sum.elim_inl, List.length_reverse, toNat_reverse]
+    have := i.toNat_lt_length
+    omega
+  | .inr j =>
+    unfold appendTR
+    simp only [Sum.elim_inr]
+    rw [toNat_eq_of_heq, toNat_reverseAux]
+    simp only [Sum.elim_inr, List.length_reverse]
 
 abbrev append_inl (i : Index xs) : Index (xs ++ ys) := append (.inl i)
 
