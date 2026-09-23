@@ -5,6 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 
 public import Extra.BitSet.Basic
+public import Extra.List
 
 /-!
 # Bit set lemmas
@@ -17,6 +18,8 @@ public section
 
 namespace Extra.BitSet
 open BitVec
+
+/-! ### Membership -/
 
 theorem mem_def {x : BitSet w} {i : Fin w} :
   i ∈ x ↔ x.toBitVec[i.val] := .rfl
@@ -37,6 +40,8 @@ protected theorem ext {x y : BitSet w} (h : ∀ i, i ∈ x ↔ i ∈ y) : x = y 
   show x.toBitVec = y.toBitVec
   ext i hi
   exact h ⟨i, hi⟩
+
+/-! ### Subset -/
 
 @[grind =]
 theorem subset_def {x y : BitSet w} : x ⊆ y ↔ ∀ {i : Fin w}, i ∈ x → i ∈ y := by
@@ -74,6 +79,8 @@ instance : Trans (α := BitSet w) (· ⊆ ·) (· ⊆ ·) (· ⊆ ·) where
 
 instance : Std.Antisymm (α := BitSet w) (· ⊆ ·) where
   antisymm _ _ := subset_antisymm
+
+/-! ### Empty and universe -/
 
 @[simp, grind =]
 theorem toBitVec_empty : (∅ : BitSet w).toBitVec = 0#w := rfl
@@ -115,6 +122,8 @@ theorem subset_empty_iff_eq_empty {x : BitSet w} : x ⊆ ∅ ↔ x = ∅ := by
 theorem univ_subset_iff_eq_univ {x : BitSet w} : univ ⊆ x ↔ x = univ := by
   simp only [subset_def, eq_univ_iff_forall_mem]; grind
 
+/-! ### The operations, bit by bit -/
+
 @[simp, grind =]
 theorem toBitVec_inter (x y : BitSet w) :
     (x ∩ y).toBitVec = x.toBitVec &&& y.toBitVec := rfl
@@ -149,6 +158,8 @@ theorem mem_sub_iff_mem_and_not_mem {x y : BitSet w} {i : Fin w} :
     i ∈ x - y ↔ i ∈ x ∧ i ∉ y := by
   simp only [mem_def]; grind
 
+/-! ### Intersection -/
+
 theorem inter_subset_left (x y : BitSet w) : x ∩ y ⊆ x := by
   simp only [subset_def]; grind
 
@@ -178,6 +189,8 @@ instance : Std.Associative (α := BitSet w) (· ∩ ·) where
 instance : Std.IdempotentOp (α := BitSet w) (· ∩ ·) where
   idempotent := inter_idem
 
+/-! ### Union -/
+
 theorem subset_union_left (x y : BitSet w) : x ⊆ x ∪ y := by
   simp only [subset_def]; grind
 
@@ -206,6 +219,8 @@ instance : Std.Associative (α := BitSet w) (· ∪ ·) where
 
 instance : Std.IdempotentOp (α := BitSet w) (· ∪ ·) where
   idempotent := union_idem
+
+/-! ### Empty and universe as units -/
 
 @[simp]
 theorem inter_empty (x : BitSet w) : x ∩ ∅ = ∅ := by
@@ -244,6 +259,8 @@ instance : Std.LawfulCommIdentity (α := BitSet w) (· ∩ ·) univ where
 
 instance : Std.LawfulCommIdentity (α := BitSet w) (· ∪ ·) ∅ where
   right_id := union_empty
+
+/-! ### Absorption and distributivity -/
 
 @[simp]
 theorem inter_union_self_left (x y : BitSet w) : x ∩ (x ∪ y) = x := by
@@ -299,6 +316,8 @@ theorem subset_iff_inter_eq_left {x y : BitSet w} : x ⊆ y ↔ x ∩ y = x := b
 theorem subset_iff_union_eq_right {x y : BitSet w} : x ⊆ y ↔ x ∪ y = y := by
   simp only [subset_def, BitSet.ext_iff]; grind
 
+/-! ### Complement -/
+
 @[simp]
 theorem neg_neg (x : BitSet w) : - -x = x := by
   ext; grind
@@ -352,6 +371,8 @@ theorem subset_neg_iff_inter_eq_empty {x y : BitSet w} : x ⊆ -y ↔ x ∩ y = 
     mem_inter_iff_mem_and_mem, eq_empty_iff_forall_not_mem]
   grind
 
+/-! ### Difference -/
+
 theorem sub_eq_inter_neg (x y : BitSet w) : x - y = x ∩ -y := by
   ext; grind
 
@@ -403,6 +424,8 @@ theorem sub_union_inter (x y : BitSet w) : (x - y) ∪ (x ∩ y) = x := by
 theorem sub_inter_inter (x y : BitSet w) : (x - y) ∩ (x ∩ y) = ∅ := by
   ext; grind
 
+/-! ### Singletons -/
+
 @[simp, grind =]
 theorem toBitVec_singleton {i : Fin w} : (singleton i).toBitVec = twoPow w i := rfl
 
@@ -427,5 +450,19 @@ theorem singleton_subset_iff_mem {x : BitSet w} {i : Fin w} :
   simp only [subset_iff_forall_mem_imp_mem, mem_singleton_iff_eq]
   grind
 
+/-! ### toList -/
+
 theorem mem_toList_iff_mem {x : BitSet w} {i : Fin w} : i ∈ x.toList ↔ i ∈ x := by
   simp [toList]
+
+@[simp, grind =]
+theorem length_toList_eq_card (x : BitSet w) : x.toList.length = x.card := by
+  simp only [toList, card, Fin.sum_eq_sum_map_finRange]
+  rw [List.length_filter_eq_sum_map]
+  simp
+
+theorem pairwise_lt_toList (x : BitSet w) : (toList x).Pairwise (· < ·) :=
+  (List.pairwise_lt_finRange w).filter _
+
+theorem nodup_toList (x : BitSet w) : (toList x).Nodup :=
+  (pairwise_lt_toList x).imp (fun h => Fin.ne_of_lt h)

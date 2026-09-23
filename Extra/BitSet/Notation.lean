@@ -5,6 +5,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 
 public import Extra.BitSet.Lemmas
+public import Extra.BitSet.Card
 public meta import Lean  -- `@[app_delab]` requires public declarations, so the
                         -- delaborators below are public `meta` and need this public too
 
@@ -15,11 +16,12 @@ Building an `Extra.BitSet` from a list of indices, and the `b{i, ...}#w`
 notation for bit set literals.
 -/
 
-@[expose] public section
+public section
 
 namespace Extra.BitSet
 
 /-- Make a bit set from a list of elements. -/
+@[expose]
 def ofList : List (Fin w) → BitSet w
   | [] => ∅
   | [i] => singleton i
@@ -38,8 +40,35 @@ theorem ofList_cons (i : Fin w) (l : List (Fin w)) :
   | nil => show singleton i = singleton i ∪ ∅; rw [union_empty]
   | cons => rfl
 
-/-- Tail-recursive version of `ofList`. Public because the `@[csimp]` theorem
-below must be public, and it mentions this definition. -/
+theorem mem_ofList_iff_mem {l : List (Fin w)} {i : Fin w} : i ∈ ofList l ↔ i ∈ l := by
+  induction l with
+  | nil => simp
+  | cons j l ih => simp [ofList_cons, ih]
+
+@[simp]
+theorem ofList_toList (x : BitSet w) : ofList (toList x) = x := by
+  ext i; rw [mem_ofList_iff_mem, mem_toList_iff_mem]
+
+theorem card_ofList_le_length (l : List (Fin w)) : (ofList l).card ≤ l.length := by
+  induction l with
+  | nil => simp
+  | cons i l ih =>
+    rw [ofList_cons, List.length_cons]
+    lia [card_union_le_card_add_card (singleton i) (ofList l), card_singleton i]
+
+theorem card_ofList_eq_length_of_nodup {l : List (Fin w)} (h : l.Nodup) :
+    (ofList l).card = l.length := by
+  induction l with
+  | nil => simp
+  | cons i l ih =>
+    rw [List.nodup_cons] at h
+    rw [ofList_cons, List.length_cons]
+    have hdisj : singleton i ∩ ofList l = ∅ :=
+      singleton_inter_eq_empty_iff_not_mem.mpr (fun hm => h.1 (mem_ofList_iff_mem.mp hm))
+    lia [card_union_eq_card_add_card_iff_disjoint.mpr hdisj, card_singleton i, ih h.2]
+
+/-- Tail-recursive version of `ofList`. -/
+@[local expose]
 def ofListTR (l : List (Fin w)) : BitSet w :=
   loop ∅ l
 where

@@ -7,7 +7,6 @@ module
 public import Extra.BitSet.Basic
 public import Extra.BitSet.Lemmas
 public import Extra.Fin.Sum
-public import Extra.List
 
 /-!
 # Cardinality of bit sets
@@ -119,9 +118,3 @@ theorem card_neg (x : BitSet w) : (-x).card = w - x.card := by
 theorem card_sub (x y : BitSet w) : (x - y).card = x.card - (x ∩ y).card := by
   lia [card_union_add_card_inter (x - y) (x ∩ y), sub_union_inter x y, sub_inter_inter x y,
        card_empty (w := w)]
-
-@[simp, grind =]
-theorem length_toList (x : BitSet w) : x.toList.length = x.card := by
-  simp only [toList, card, Fin.sum_eq_sum_map_finRange]
-  rw [List.length_filter_eq_sum_map]
-  simp
