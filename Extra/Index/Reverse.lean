@@ -25,10 +25,18 @@ def reverse {xs : List α} (i : Index xs) : Index xs.reverse := reverseAux (.inl
 @[inline]
 def unreverse {xs : List α} (i : Index xs.reverse) : Index xs := xs.reverse_reverse ▸ i.reverse
 
+/-- `reverseAux` on a reversed list is `++`. Stated at list level so that the
+transport in `appendTR` below is one that `toNat_eq_of_heq` can see through;
+transporting along `List.append_eq_appendTR`, an equality of *functions*, cannot
+be rewritten by it. -/
+theorem reverse_reverseAux (xs ys : List α) :
+    xs.reverse.reverseAux ys = List.append xs ys := by
+  rw [List.reverseAux_eq, List.reverse_reverse]; rfl
+
 @[inline]
 def appendTR {xs ys : List α} : Sum (Index xs) (Index ys) → Index (List.append xs ys)
-  | .inl i => List.append_eq_appendTR ▸ reverseAux (.inl i.reverse)
-  | .inr j => List.append_eq_appendTR ▸ reverseAux (.inr j)
+  | .inl i => reverse_reverseAux xs ys ▸ reverseAux (.inl i.reverse)
+  | .inr j => reverse_reverseAux xs ys ▸ reverseAux (.inr j)
 
 /-- Transporting an index along an equality of lists does not change its value. -/
 theorem val_eq_of_heq {xs ys : List α} (h : xs = ys) (i : Index xs) : (h ▸ i).val = i.val := by
