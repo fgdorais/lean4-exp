@@ -2,8 +2,12 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Instances
-import Algebra.Theories.Group
+module
+
+public meta import Algebra.Instances  -- the `Example` section's local notation needs it at elaboration time
+public import Algebra.Theories.Group
+
+@[expose] public section
 
 open List
 
@@ -120,16 +124,16 @@ theorem isReduced_rpos (h : w.isReduced) : (w.rpos i).isReduced := by
   | pos _ _ => exact h
   | neg j _ =>
     match (inferInstance : Decidable (i = j)) with
-    | isTrue hij => simp only [rpos]; rw [if_pos hij, isReduced_neg_tail h]
-    | isFalse hij => simp only [rpos]; rw [if_neg hij, isReduced, decide_eq_true hij, h]; rfl
+    | isTrue hij => simp only [rpos]; rw [ite_eq_left hij, isReduced_neg_tail h]
+    | isFalse hij => simp only [rpos]; rw [ite_eq_right hij, isReduced, decide_eq_true hij, h]; rfl
 
 theorem isReduced_rneg (h : w.isReduced) : (w.rneg i).isReduced := by
   match w with
   | id => exact h
   | pos j _ =>
     match (inferInstance : Decidable (i = j)) with
-    | isTrue hij => simp only [rneg]; rw [if_pos hij, isReduced_pos_tail h]
-    | isFalse hij => simp only [rneg]; rw [if_neg hij, isReduced, decide_eq_true hij, h]; rfl
+    | isTrue hij => simp only [rneg]; rw [ite_eq_left hij, isReduced_pos_tail h]
+    | isFalse hij => simp only [rneg]; rw [ite_eq_right hij, isReduced, decide_eq_true hij, h]; rfl
   | neg _ _ => exact h
 
 theorem isReduced_rapp (h : w.isReduced) : (rapp v w).isReduced := by
@@ -188,11 +192,11 @@ theorem rapp_rpos_left (h : w.isReduced) : rapp (rpos i v) w = rpos i (rapp v w)
     | isTrue rfl =>
       rw [rpos_rneg_cancel]
       simp only [rpos]
-      rw [if_pos trivial]
+      rw [ite_eq_left trivial]
       exact isReduced_rapp h
     | isFalse hne =>
       simp only [rpos]
-      rw [if_neg hne, rapp, rapp]
+      rw [ite_eq_right hne, rapp, rapp]
       rfl
 
 theorem rapp_rneg_left (h : w.isReduced) : rapp (rneg i v) w = rneg i (rapp v w) := by
@@ -204,10 +208,10 @@ theorem rapp_rneg_left (h : w.isReduced) : rapp (rneg i v) w = rneg i (rapp v w)
     | isTrue rfl =>
       rw [rneg_rpos_cancel (isReduced_rapp h)]
       simp only [rneg]
-      rw [if_pos trivial]
+      rw [ite_eq_left trivial]
     | isFalse hne =>
       simp only [rneg]
-      rw [if_neg hne, rapp, rapp]
+      rw [ite_eq_right hne, rapp, rapp]
       rfl
   | neg j v => rfl
 
@@ -221,10 +225,10 @@ theorem raux_rpos_left (h : w.isReduced) : raux (rpos i v) w = raux v (rneg i w)
     | isTrue rfl =>
       rw [rpos_rneg_cancel h]
       simp only [rpos]
-      rw [if_pos trivial]
+      rw [ite_eq_left trivial]
     | isFalse hne =>
       simp only [rpos]
-      rw [if_neg hne, raux, raux]
+      rw [ite_eq_right hne, raux, raux]
       rfl
 
 theorem raux_rneg_left (h : w.isReduced) : raux (rneg i v) w = raux v (rpos i w) := by
@@ -236,10 +240,10 @@ theorem raux_rneg_left (h : w.isReduced) : raux (rneg i v) w = raux v (rpos i w)
     | isTrue rfl =>
       rw [rneg_rpos_cancel h]
       simp only [rneg]
-      rw [if_pos trivial]
+      rw [ite_eq_left trivial]
     | isFalse hne =>
       simp only [rneg]
-      rw [if_neg hne, raux, raux]
+      rw [ite_eq_right hne, raux, raux]
       rfl
   | neg j v => rfl
 
@@ -254,7 +258,7 @@ theorem rapp_id (h : w.isReduced) : rapp w id = w := by
     | neg j w =>
       match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
-      | isFalse hne => simp only [rpos]; rw [if_neg hne]
+      | isFalse hne => simp only [rpos]; rw [ite_eq_right hne]
   | neg i w ih =>
     rw [rapp, ih (isReduced_neg_tail h)]
     match w with
@@ -262,7 +266,7 @@ theorem rapp_id (h : w.isReduced) : rapp w id = w := by
     | pos j w =>
       match (inferInstance : Decidable (i = j)) with
       | isTrue rfl => simp [isReduced] at h
-      | isFalse hne => simp only [rneg]; rw [if_neg hne]
+      | isFalse hne => simp only [rneg]; rw [ite_eq_right hne]
     | neg j w => rfl
 
 theorem raux_id : raux w id = rinv w := rfl
@@ -304,8 +308,8 @@ theorem raux_eq (h : w.isReduced) : raux v w = rapp (rinv v) w := (rapp_raux_com
 theorem raux_self : raux w w = id := by
   induction w with
   | id => rfl
-  | pos i w ih => simp only [raux, rneg]; rw [if_pos trivial, ih]
-  | neg i w ih => simp only [raux, rpos]; rw [if_pos trivial, ih]
+  | pos i w ih => simp only [raux, rneg]; rw [ite_eq_left trivial, ih]
+  | neg i w ih => simp only [raux, rpos]; rw [ite_eq_left trivial, ih]
 
 section Eval
 variable (s : GroupSig α)
@@ -335,10 +339,10 @@ theorem eval_rpos [Group s] (i : Index xs) (a : Word xs) : eval s (rpos i a) = s
     match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       simp only [rpos]
-      rw [if_pos trivial, eval_neg, ←op_assoc s.op, op_right_inv s.op, op_left_id s.op]
+      rw [ite_eq_left trivial, eval_neg, ←op_assoc s.op, op_right_inv s.op, op_left_id s.op]
     | isFalse hne =>
       simp only [rpos]
-      rw [if_neg hne, eval_pos]
+      rw [ite_eq_right hne, eval_pos]
 
 theorem eval_rneg [Group s] (i : Index xs) (a : Word xs) : eval s (rneg i a) = s.op (s.inv i.val) (eval s a) := by
   match a with
@@ -347,10 +351,10 @@ theorem eval_rneg [Group s] (i : Index xs) (a : Word xs) : eval s (rneg i a) = s
     match (inferInstance : Decidable (i = j)) with
     | isTrue rfl =>
       simp only [rneg]
-      rw [if_pos trivial, eval_pos, ←op_assoc s.op, op_left_inv s.op, op_left_id s.op]
+      rw [ite_eq_left trivial, eval_pos, ←op_assoc s.op, op_left_inv s.op, op_left_id s.op]
     | isFalse hne =>
       simp only [rneg]
-      rw [if_neg hne, eval_neg]
+      rw [ite_eq_right hne, eval_neg]
   | neg j a => rfl
 
 theorem eval_rapp [Group s] (a b : Word xs) : eval s (rapp a b) = s.op (eval s a) (eval s b) := by

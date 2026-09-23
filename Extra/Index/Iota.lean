@@ -1,6 +1,15 @@
-import Extra.Index.Basic
-import Extra.Index.Append
-import Extra.Index.Map
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.Append
+public import Extra.Index.Map
+
+@[expose] public section
+
 
 namespace List
 
@@ -13,7 +22,10 @@ def indexIotaTR {α} (xs : List α) : List (Index xs) :=
     this ▸ loop xs (x :: ys) (this ▸ rs.push (Index.append_inr Index.head))
   loop xs [] #[]
 
-@[implemented_by indexIotaTR] -- TODO: use csimp
+-- `reducible` so that defeq can see through `indexIota` inside implicit type
+-- arguments; without it `val_iota` and `iota_val` need
+-- `backward.isDefEq.respectTransparency false`.
+@[implemented_by indexIotaTR, reducible] -- TODO: use csimp
 def indexIota {α} : (xs : List α) → List (Index xs)
 | [] => []
 | _::xs => Index.head :: (indexIota xs).map Index.tail
@@ -24,13 +36,13 @@ def iota : {xs : List α} → Index xs → Index xs.indexIota
 | _::_, head => head
 | _::_, tail i => tail (map tail (iota i))
 
-set_option backward.isDefEq.respectTransparency false in
 theorem val_iota (i : Index xs) : val (iota i) = i := by
   induction i with
   | head => rfl
-  | tail i ih => rw [iota, val_tail, val_map, ih]
+  -- `List.indexIota` must be named explicitly, so that `val_tail` sees the
+  -- ambient `Index (xs.indexIota)` as an index into a `cons`.
+  | tail i ih => simp only [iota, List.indexIota, val_tail, val_map, ih]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem iota_val {xs : List α} (i : Index xs.indexIota) : iota (val i) = i := by
   induction xs with
   | nil => contradiction
@@ -38,6 +50,18 @@ theorem iota_val {xs : List α} (i : Index xs.indexIota) : iota (val i) = i := b
     match i with
     | head => rfl
     | tail i => rw [←map_unmap Index.tail i, val_tail, val_unmap Index.tail, iota, ih, map_unmap]
+
+theorem iota_eq_iff_eq_val {xs : List α} (i : Index xs) (k : Index xs.indexIota) :
+    iota i = k ↔ i = val k := by
+  constructor
+  · intro h; rw [←h, val_iota]
+  · intro h; rw [h, iota_val]
+
+theorem val_eq_iff_eq_iota {xs : List α} (k : Index xs.indexIota) (i : Index xs) :
+    val k = i ↔ k = iota i := by
+  constructor
+  · intro h; rw [←h, iota_val]
+  · intro h; rw [h, val_iota]
 
 def iotaEquiv (xs : List α) : Equiv (Index xs) (Index xs.indexIota) where
   fwd := iota

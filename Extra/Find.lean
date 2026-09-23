@@ -1,5 +1,13 @@
-import Extra.Basic
-import Extra.Equiv
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Basic
+public import Extra.Equiv
+
+@[expose] public section
 
 class Find (α : Sort _) where
   find? : (α → Bool) → Option α

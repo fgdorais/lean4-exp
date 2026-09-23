@@ -2,8 +2,12 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Cast.Basic
-import Extra.Cast.DEq
+module
+
+public import Extra.Cast.Basic
+public import Extra.Cast.DEq
+
+@[expose] public section
 
 /-- Dependent type casting -/
 def dcast {motive : α → Sort _} (h : a = b) (t : motive a) : motive b := Eq.ndrec t h

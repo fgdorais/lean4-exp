@@ -2,7 +2,11 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Basic
+module
+
+public import Extra.Basic
+
+@[expose] public section
 
 /-- Equivalence of sorts -/
 structure Equiv.{u,v} (α : Sort u) (β : Sort v) : Sort (max 1 (max u v)) where

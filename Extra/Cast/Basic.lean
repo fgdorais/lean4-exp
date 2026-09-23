@@ -2,7 +2,11 @@
 Copyright © 2024 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Basic
+module
+
+public import Extra.Basic
+
+@[expose] public section
 
 theorem congr_ndrec {β : α → Sort _} (f : (x : α) → β x → γ) (h : x = x') (y : β x) :
     f x' (Eq.ndrec y h) = f x y := by cases h; rfl

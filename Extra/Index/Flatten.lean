@@ -1,5 +1,13 @@
-import Extra.Index.Basic
-import Extra.Index.Append
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.Append
+
+@[expose] public section
 
 namespace List.Index
 
@@ -53,7 +61,6 @@ def flattenEquiv (xss : List (List α)) :
     · intro | rfl => exact unflatten_flatten ..
     · intro | rfl => exact flatten_unflatten ..
 
---set_option backward.isDefEq.respectTransparency false in
 --set_option trace.Meta.isDefEq true in
 theorem val_flatten (i : (i : Index xss) × Index i.val) :
     (flatten i).val = i.snd.val := by

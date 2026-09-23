@@ -1,6 +1,14 @@
-import Extra.Basic
-import Extra.Equiv.Basic
-import Extra.Tactic.Cast
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Basic
+public import Extra.Equiv.Basic
+public import Extra.Tactic.Cast
+
+@[expose] public section
 
 namespace List
 
@@ -202,6 +210,12 @@ theorem toNat_ofFin {xs : List α} (i : Fin xs.length) : (Index.ofFin i).toNat =
     | ⟨i+1,h⟩ =>
       apply congrArg Nat.succ
       rw [ih]
+
+/-- An index is determined by its position. -/
+theorem eq_of_toNat_eq {xs : List α} {i j : Index xs} (h : i.toNat = j.toNat) : i = j := by
+  rw [← ofFin_toFin i, ← ofFin_toFin j]
+  congr 1
+  exact Fin.ext h
 
 theorem toFin_ofFin {xs : List α} (i : Fin xs.length) : (Index.ofFin i).toFin = i := by
   apply Fin.eq_of_val_eq

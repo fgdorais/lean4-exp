@@ -2,7 +2,11 @@
 Copyright © 2024 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Basic
+module
+
+public import Extra.Basic
+
+@[expose] public section
 
 instance (β : α → Sort _) [DecidableEq α] [(i : α) → DecidableEq (β i)] : DecidableEq ((i : α) × β i)
   | ⟨i,x⟩, ⟨j,y⟩ =>

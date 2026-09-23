@@ -2,9 +2,13 @@
 Copyright © 2023-2024 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Logic.Relation.Classes
-import Logic.Relation.Tactics
-import Logic.Relation.Order
+module
+
+public import Logic.Relation.Classes
+public import Logic.Relation.Tactics
+public import Logic.Relation.Order
+
+@[expose] public section
 
 open Logic
 

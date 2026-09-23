@@ -1,6 +1,14 @@
-import Extra.Index.Basic
-import Extra.Index.FlatMap
-import Extra.Index.Map
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.FlatMap
+public import Extra.Index.Map
+
+@[expose] public section
 
 namespace List
 
@@ -19,8 +27,8 @@ theorem unprod_prod (i : Index xs × Index ys) : unprod (prod i) = i := by
   rw [unFlatMap_flatMap, unmap_map]
 
 theorem prod_unprod (k : Index (List.product xs ys)) : prod (unprod k) = k := by
-  simp only [prod, unprod]
-  rw [map_unmap, flatMap_unFlatMap]
+  simp only [prod, unprod, map_unmap]
+  exact flatMap_unFlatMap ..
 
 theorem prod_eq_iff_eq_unprod (i : Index xs × Index ys) (k : Index (List.product xs ys)) : prod i = k ↔ i = unprod k := by
   constructor
@@ -41,8 +49,10 @@ def prodEquiv (xs ys : List α) : Equiv (Index xs × Index ys) (Index (List.prod
     · intro | rfl => exact unprod_prod ..
     · intro | rfl => exact prod_unprod ..
 
-set_option backward.isDefEq.respectTransparency false in
 theorem val_prod (i : Index xs × Index ys) : (prod i).val = (i.fst.val, i.snd.val) := by
+  -- `List.product` is semireducible, so it must be unfolded explicitly: the goal
+  -- carries `Index (xs.product ys)` while `val_flatMap` expects `Index (xs.flatMap _)`.
+  unfold List.product
   rw [prod, val_flatMap, val_map]
 
 theorem val_unprod (i : Index (List.product xs ys)) : ((unprod i).fst.val, (unprod i).snd.val) = i.val := by
