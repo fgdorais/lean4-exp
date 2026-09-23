@@ -7,11 +7,13 @@ Copyright (c) 2021 Sebastian Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sebastian Ullrich
 -/
-import Lean.HeadIndex
-import Lean.Elab.Command
-import Lean.Elab.Term
-import Lean.Meta.AbstractMVars
-import Batteries.Util.Cache
+module
+
+public meta import Lean.HeadIndex
+public meta import Lean.Elab.Command
+public meta import Lean.Elab.Term
+public meta import Lean.Meta.AbstractMVars
+public meta import Batteries.Util.Cache
 
 /-!
 # The `#find` command and tactic.
@@ -27,6 +29,8 @@ Inside tactic proofs, there is a `#find` tactic with the same syntax,
 or the `find` tactic which looks for lemmas which are `apply`able against the current goal.
 
 -/
+
+public meta section
 
 open Lean Elab Meta
 open Batteries.Tactic

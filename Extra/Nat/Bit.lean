@@ -2,7 +2,12 @@
 Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Nat.Lemmas
+module
+
+import all Init.Data.Nat.Bitwise.Basic  -- for unfolding `bitwise`, `land`, `lor`, `xor`
+public import Extra.Nat.Lemmas
+
+public section
 
 namespace Nat
 
@@ -92,7 +97,7 @@ theorem bit1_bitwise_bit1 (f x y) :
 
 /-! ### Bitwise and -/
 
-theorem and_def (x y : Nat) : (x &&& y) = bitwise (· && ·) x y := rfl
+private theorem and_def (x y : Nat) : (x &&& y) = bitwise (· && ·) x y := rfl
 
 @[local simp] theorem bit0_and_bit0 (x y : Nat) : (2 * x) &&& (2 * y) = 2 * (x &&& y) := by
   if x = 0 then
@@ -113,7 +118,7 @@ theorem and_def (x y : Nat) : (x &&& y) = bitwise (· && ·) x y := rfl
 
 /-! ### Bitwise or -/
 
-theorem or_def (x y : Nat) : (x ||| y) = bitwise (· || ·) x y := rfl
+private theorem or_def (x y : Nat) : (x ||| y) = bitwise (· || ·) x y := rfl
 
 @[local simp] theorem bit0_or_bit0 (x y : Nat) : (2 * x) ||| (2 * y) = 2 * (x ||| y) := by
   if x = 0 then
@@ -134,7 +139,7 @@ theorem or_def (x y : Nat) : (x ||| y) = bitwise (· || ·) x y := rfl
 
 /-! ### Bitwise xor -/
 
-theorem xor_def (x y : Nat) : (x ^^^ y) = bitwise Bool.xor x y := rfl
+private theorem xor_def (x y : Nat) : (x ^^^ y) = bitwise Bool.xor x y := rfl
 
 @[local simp] theorem bit0_xor_bit0 (x y : Nat) : (2 * x) ^^^ (2 * y) = 2 * (x ^^^ y) := by
   if x = 0 then

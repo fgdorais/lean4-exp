@@ -2,8 +2,12 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Basic
-import Extra.Int.Basic
+module
+
+public import Extra.Basic
+public import Extra.Int.Basic
+
+@[expose] public section
 
 namespace Int
 

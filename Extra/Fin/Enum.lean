@@ -2,9 +2,13 @@
 Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Equiv
-import Extra.Equiv.Fin
-import Extra.Find
+module
+
+public import Extra.Equiv
+public import Extra.Equiv.Fin
+public import Extra.Find
+
+@[expose] public section
 
 namespace Fin
 

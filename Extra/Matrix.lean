@@ -2,7 +2,11 @@
 Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Vector
+module
+
+public import Extra.Vector
+
+@[expose] public section
 
 class Std.LeftDistrib {α β : Type _} (mul : α → β → β) (add : β → β → β) : Prop where
   left_distrib : mul a (add b₁ b₂) = add (mul a b₁) (mul a b₂)

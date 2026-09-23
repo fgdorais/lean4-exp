@@ -2,7 +2,11 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Equiv.Basic
+module
+
+public import Extra.Equiv.Basic
+
+@[expose] public section
 
 protected def Option.equiv {α β} (e : Equiv α β) : Equiv (Option α) (Option β) where
   fwd

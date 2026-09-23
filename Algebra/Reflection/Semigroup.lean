@@ -2,8 +2,12 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Instances
-import Algebra.Theories.Semigroup
+module
+
+public import Algebra.Instances
+public import Algebra.Theories.Semigroup
+
+@[expose] public section
 
 open List
 

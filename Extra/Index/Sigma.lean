@@ -2,9 +2,13 @@
 Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Index.Basic
-import Extra.Index.Append
-import Extra.Index.Map
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.Append
+public import Extra.Index.Map
+
+@[expose] public section
 
 namespace List.Index
 
