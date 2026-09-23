@@ -10,17 +10,13 @@ public import Extra.Index.Map
 
 @[expose] public section
 
--- Set file-wide, not per declaration. With `set_option ... in` the option is
--- applied unreliably when Lean elaborates declarations in parallel, and proofs
--- in this file then fail intermittently -- including ones that carry no flag of
--- their own, such as `val_iota` and `unsigma_sigma`. Six consecutive clean
--- builds pass with the option set file-wide; roughly one in three failed with
--- the per-declaration form.
-set_option backward.isDefEq.respectTransparency false
 
 namespace List
 
-protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
+-- `reducible` so that defeq can see through `List.pi` inside implicit type
+-- arguments; without it `unpi_pi` and `pi_unpi` need
+-- `backward.isDefEq.respectTransparency false`.
+@[reducible] protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
 | [] => [(nomatch .)]
 | x::xs => (List.pi f xs).flatMap fun ys => (f x).map fun y i => match i with | .head => y | .tail i => ys i
 

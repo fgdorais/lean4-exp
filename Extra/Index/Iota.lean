@@ -10,13 +10,6 @@ public import Extra.Index.Map
 
 @[expose] public section
 
--- Set file-wide, not per declaration. With `set_option ... in` the option is
--- applied unreliably when Lean elaborates declarations in parallel, and proofs
--- in this file then fail intermittently -- including ones that carry no flag of
--- their own, such as `val_iota` and `unsigma_sigma`. Six consecutive clean
--- builds pass with the option set file-wide; roughly one in three failed with
--- the per-declaration form.
-set_option backward.isDefEq.respectTransparency false
 
 namespace List
 
@@ -29,7 +22,10 @@ def indexIotaTR {α} (xs : List α) : List (Index xs) :=
     this ▸ loop xs (x :: ys) (this ▸ rs.push (Index.append_inr Index.head))
   loop xs [] #[]
 
-@[implemented_by indexIotaTR] -- TODO: use csimp
+-- `reducible` so that defeq can see through `indexIota` inside implicit type
+-- arguments; without it `val_iota` and `iota_val` need
+-- `backward.isDefEq.respectTransparency false`.
+@[implemented_by indexIotaTR, reducible] -- TODO: use csimp
 def indexIota {α} : (xs : List α) → List (Index xs)
 | [] => []
 | _::xs => Index.head :: (indexIota xs).map Index.tail
