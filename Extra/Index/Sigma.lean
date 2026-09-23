@@ -50,14 +50,16 @@ def sigmaEquiv {β : α → Type _} (f : (x : α) → List (β x)) (xs : List α
     · intro | rfl => exact unsigma_sigma ..
     · intro | rfl => exact sigma_unsigma ..
 
-set_option backward.isDefEq.respectTransparency false in
 theorem val_sigma {β : α → Type _} {f : (x : α) → List (β x)} (i : (i : Index xs) × Index (f i.val)) : (sigma i).val = ⟨i.fst.val, i.snd.val⟩ := by
   induction xs with
   | nil => cases i; contradiction
   | cons x xs ih =>
+    -- Name `List.sigma`, and use the general `val_append` rather than
+    -- `val_append_inl`/`_inr`: the goal holds `append (Sum.inr _)`, which does
+    -- not match the `append_inr` abbrev syntactically.
     match i with
-    | ⟨head, j⟩ => simp [sigma, val_append_inl, val_map]
-    | ⟨tail i, j⟩ => simp [sigma, val_append_inr, ih]
+    | ⟨head, j⟩ => simp [List.sigma, sigma, val_append, val_map]
+    | ⟨tail i, j⟩ => simp [List.sigma, sigma, val_append]; exact ih ⟨i, j⟩
 
 theorem val_unsigma {β : α → Type _} {f : (x : α) → List (β x)} {xs : List α} (k : Index (xs.sigma f)) : ⟨(unsigma k).fst.val, (unsigma k).snd.val⟩ = k.val := by
   rw [←sigma_unsigma k, val_sigma, unsigma_sigma]
