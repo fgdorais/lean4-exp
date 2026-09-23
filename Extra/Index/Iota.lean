@@ -24,11 +24,12 @@ def iota : {xs : List α} → Index xs → Index xs.indexIota
 | _::_, head => head
 | _::_, tail i => tail (map tail (iota i))
 
-set_option backward.isDefEq.respectTransparency false in
 theorem val_iota (i : Index xs) : val (iota i) = i := by
   induction i with
   | head => rfl
-  | tail i ih => rw [iota, val_tail, val_map, ih]
+  -- `List.indexIota` must be named explicitly, so that `val_tail` sees the
+  -- ambient `Index (xs.indexIota)` as an index into a `cons`.
+  | tail i ih => simp only [iota, List.indexIota, val_tail, val_map, ih]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem iota_val {xs : List α} (i : Index xs.indexIota) : iota (val i) = i := by

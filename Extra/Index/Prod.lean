@@ -41,8 +41,10 @@ def prodEquiv (xs ys : List α) : Equiv (Index xs × Index ys) (Index (List.prod
     · intro | rfl => exact unprod_prod ..
     · intro | rfl => exact prod_unprod ..
 
-set_option backward.isDefEq.respectTransparency false in
 theorem val_prod (i : Index xs × Index ys) : (prod i).val = (i.fst.val, i.snd.val) := by
+  -- `List.product` is semireducible, so it must be unfolded explicitly: the goal
+  -- carries `Index (xs.product ys)` while `val_flatMap` expects `Index (xs.flatMap _)`.
+  unfold List.product
   rw [prod, val_flatMap, val_map]
 
 theorem val_unprod (i : Index (List.product xs ys)) : ((unprod i).fst.val, (unprod i).snd.val) = i.val := by
