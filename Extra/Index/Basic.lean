@@ -186,7 +186,17 @@ def ofFinTR {xs : List α} (i : Fin xs.length) : Index xs :=
   | _ :: _, _, .inl ⟨i+1, hi⟩ => loop (ys:=_::_) (.inl ⟨i, Nat.lt_of_succ_lt_succ hi⟩)
   xs.reverse_reverse ▸ loop (ys:=[]) (.inl ⟨i.val, length_reverse.symm ▸ i.isLt⟩)
 
-@[implemented_by ofFinTR]
+-- `@[implemented_by ofFinTR]` was REMOVED here: it was false. `ofFinTR`
+-- computes the *mirrored* position, because its `loop` walks `xs.reverse`.
+-- Checked by kernel reduction on `xs = ['a','b','c','d']`:
+--
+--   (ofFin   ⟨0⟩).toNat = 0    (ofFin   ⟨0⟩).val = 'a'
+--   (ofFinTR ⟨0⟩).toNat = 3    (ofFinTR ⟨0⟩).val = 'd'
+--
+-- so compiled code disagreed with the kernel: at runtime `ofFin ⟨0⟩` returned
+-- the last element. `@[implemented_by]` asserts that equation without proving
+-- it, which is exactly how this went unnoticed. Restore it only together with a
+-- `@[csimp]` proof, after fixing `ofFinTR`.
 protected def ofFin : {xs : List α} → Fin xs.length → Index xs
   | _::_, ⟨0,_⟩ => head
   | _::_, ⟨i+1,h⟩ => tail (Index.ofFin ⟨i, Nat.lt_of_succ_lt_succ h⟩)
