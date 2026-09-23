@@ -1,3 +1,7 @@
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
 import Extra.Vector
 
 class Std.LeftDistrib {α β : Type _} (mul : α → β → β) (add : β → β → β) : Prop where

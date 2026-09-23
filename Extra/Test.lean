@@ -1,3 +1,7 @@
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
 theorem Array.getElem_append (as bs : Array α) (i) (hi : i < (as ++ bs).size) :
     (as ++ bs)[i] = if h : i < as.size then as[i] else
       have : i - as.size < bs.size := by
