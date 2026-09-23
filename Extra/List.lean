@@ -6,7 +6,7 @@ module
 
 public import Extra.Basic
 
-@[expose] public section
+public section
 
 namespace List
 
@@ -56,6 +56,7 @@ theorem map_comp {α β γ} (f : α → β) (g : β → γ) (as : List α) : as.
 
 /-! ### repeat -/
 
+@[expose]
 def «repeat» (n : Nat) (l : List α) := n.fold (fun _ _ r => l ++ r) []
 
 -- `Nat.fold`'s body is not exposed, so these cannot be `rfl` in a `module`:

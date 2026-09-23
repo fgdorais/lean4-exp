@@ -7,9 +7,10 @@ module
 public import Extra.Cast.Basic
 public import Extra.Cast.DEq
 
-@[expose] public section
+public section
 
 /-- Dependent type casting -/
+@[expose]
 def dcast {motive : α → Sort _} (h : a = b) (t : motive a) : motive b := Eq.ndrec t h
 
 @[elim_cast]
