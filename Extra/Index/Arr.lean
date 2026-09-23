@@ -39,3 +39,6 @@ def arrEquiv (xs : List α) (ys : List β) : Equiv (Index xs → Index ys) (Inde
     constructor
     · intro | rfl => exact unarr_arr ..
     · intro | rfl => exact arr_unarr ..
+
+theorem val_arr (h : Index xs → Index ys) : (arr h).val = fun i => (h i).val := by
+  rw [arr, val_pi]
