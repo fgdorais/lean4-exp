@@ -203,6 +203,12 @@ theorem toNat_ofFin {xs : List α} (i : Fin xs.length) : (Index.ofFin i).toNat =
       apply congrArg Nat.succ
       rw [ih]
 
+/-- An index is determined by its position. -/
+theorem eq_of_toNat_eq {xs : List α} {i j : Index xs} (h : i.toNat = j.toNat) : i = j := by
+  rw [← ofFin_toFin i, ← ofFin_toFin j]
+  congr 1
+  exact Fin.ext h
+
 theorem toFin_ofFin {xs : List α} (i : Fin xs.length) : (Index.ofFin i).toFin = i := by
   apply Fin.eq_of_val_eq
   apply toNat_ofFin
