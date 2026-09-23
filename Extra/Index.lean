@@ -5,6 +5,7 @@ import Extra.Index.FlatMap
 import Extra.Index.Flatten
 import Extra.Index.Map
 import Extra.Index.Option
+import Extra.Index.Pi
 import Extra.Index.Prod
 import Extra.Index.Reverse
 import Extra.Index.Sigma
