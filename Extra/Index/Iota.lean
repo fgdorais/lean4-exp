@@ -2,6 +2,14 @@ import Extra.Index.Basic
 import Extra.Index.Append
 import Extra.Index.Map
 
+-- Set file-wide, not per declaration. With `set_option ... in` the option is
+-- applied unreliably when Lean elaborates declarations in parallel, and proofs
+-- in this file then fail intermittently -- including ones that carry no flag of
+-- their own, such as `val_iota` and `unsigma_sigma`. Six consecutive clean
+-- builds pass with the option set file-wide; roughly one in three failed with
+-- the per-declaration form.
+set_option backward.isDefEq.respectTransparency false
+
 namespace List
 
 def indexIotaTR {α} (xs : List α) : List (Index xs) :=
@@ -31,7 +39,6 @@ theorem val_iota (i : Index xs) : val (iota i) = i := by
   -- ambient `Index (xs.indexIota)` as an index into a `cons`.
   | tail i ih => simp only [iota, List.indexIota, val_tail, val_map, ih]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem iota_val {xs : List α} (i : Index xs.indexIota) : iota (val i) = i := by
   induction xs with
   | nil => contradiction
