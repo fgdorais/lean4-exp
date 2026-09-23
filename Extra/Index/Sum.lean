@@ -8,7 +8,7 @@ public import Extra.Index.Basic
 public import Extra.Index.Append
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 namespace List
 
@@ -16,10 +16,12 @@ protected abbrev coprod {α β} (xs : List α) (ys : List β) : List (Sum α β)
 
 namespace Index
 
+@[expose]
 def sum : Sum (Index xs) (Index ys) → Index (List.coprod xs ys)
   | .inl i => append (.inl (i.map Sum.inl))
   | .inr j => append (.inr (j.map Sum.inr))
 
+@[expose]
 def unsum (k : Index (List.coprod xs ys)) : Sum (Index xs) (Index ys) :=
   match unappend k with
   | .inl i => .inl (i.unmap Sum.inl)
@@ -44,6 +46,7 @@ theorem unsum_eq_iff_eq_sum (k : Index (List.coprod xs ys)) (i : Sum (Index xs) 
   · intro h; rw [←h, sum_unsum]
   · intro h; rw [h, unsum_sum]
 
+@[expose]
 def sumEquiv (xs : List α) (ys : List β) : Equiv (Sum (Index xs) (Index ys)) (Index (List.coprod xs ys)) where
   fwd := sum
   rev := unsum

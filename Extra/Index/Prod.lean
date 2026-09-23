@@ -8,16 +8,18 @@ public import Extra.Index.Basic
 public import Extra.Index.FlatMap
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 namespace List
 
 namespace Index
 variable {α β} {xs : List α} {ys : List β}
 
+@[expose]
 def prod : Index xs × Index ys → Index (List.product xs ys)
 | (i,j) => Index.flatMap (λ x => ys.map (Prod.mk x)) ⟨i, j.map (Prod.mk i.val)⟩
 
+@[expose]
 def unprod (k : Index (List.product xs ys)) : Index xs × Index ys :=
   match unFlatMap (λ x => ys.map (Prod.mk x)) k with
   | ⟨i,j⟩ => (i, j.unmap (Prod.mk i.val))
@@ -40,6 +42,7 @@ theorem unprod_eq_iff_eq_prod (i : Index (List.product xs ys)) (j : Index xs × 
   · intro h; rw [←h, prod_unprod]
   · intro h; rw [h, unprod_prod]
 
+@[expose]
 def prodEquiv (xs ys : List α) : Equiv (Index xs × Index ys) (Index (List.product xs ys)) where
   fwd := prod
   rev := unprod

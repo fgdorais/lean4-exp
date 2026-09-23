@@ -8,7 +8,7 @@ public import Extra.Index.Basic
 public import Extra.Index.FlatMap
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 
 namespace List
@@ -16,17 +16,19 @@ namespace List
 -- `reducible` so that defeq can see through `List.pi` inside implicit type
 -- arguments; without it `unpi_pi` and `pi_unpi` need
 -- `backward.isDefEq.respectTransparency false`.
-@[reducible] protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
+@[reducible, expose] protected def pi {α} {β : α → Type _} (f : (x : α) → List (β x)) : (xs : List α) → List ((i : Index xs) → β i.val)
 | [] => [(nomatch .)]
 | x::xs => (List.pi f xs).flatMap fun ys => (f x).map fun y i => match i with | .head => y | .tail i => ys i
 
 namespace Index
 variable {α} {β : α → Type _} {f : (x : α) → List (β x)} {xs : List α}
 
+@[expose]
 def pi : {xs : List α} → ((i : Index xs) → Index (f i.val)) → Index (xs.pi f)
 | [], _ => head
 | _::_, y => flatMap _ ⟨pi fun i => y i.tail, map _ (y head)⟩
 
+@[expose]
 def unpi : {xs : List α} → (Index (xs.pi f)) → (i : Index xs) → Index (f i.val)
 | _::_, k, head => unmap _ (unFlatMap _ k).snd
 | _::_, k, tail i => unpi (unFlatMap _ k).fst i
@@ -84,6 +86,7 @@ theorem unpi_eq_iff_eq_pi (k : Index (xs.pi f)) (h : (i : Index xs) → Index (f
   · intro h; rw [←h, pi_unpi]
   · intro h; rw [h, unpi_pi]
 
+@[expose]
 def piEquiv (xs : List α) (f : (x : α) → List (β x)) : Equiv ((i : Index xs) → Index (f i.val)) (Index (xs.pi f)) where
   fwd := pi
   rev := unpi

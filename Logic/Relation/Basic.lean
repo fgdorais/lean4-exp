@@ -6,7 +6,7 @@ module
 
 public import Logic.Prelude
 
-@[expose] public section
+public section
 
 namespace Relation
 
