@@ -14,7 +14,6 @@ def unsigma : {xs : List α} → Index (xs.sigma f) → (i : Index xs) × Index 
   | .inl j => ⟨head, j.unmap (Sigma.mk x)⟩
   | .inr k => ⟨tail (unsigma k).fst, (unsigma k).snd⟩
 
-set_option backward.isDefEq.respectTransparency false in
 theorem unsigma_sigma {β : α → Type _} {f : (x : α) → List (β x)} (i : (i : Index xs) × Index (f i.val)) : unsigma (sigma i) = i := by
   induction xs with
   | nil => cases i; contradiction
