@@ -82,3 +82,18 @@ def piEquiv (xs : List α) (f : (x : α) → List (β x)) : Equiv ((i : Index xs
     constructor
     · intro | rfl => exact unpi_pi ..
     · intro | rfl => exact pi_unpi ..
+
+theorem val_pi {xs : List α} (y : (i : Index xs) → Index (f i.val)) :
+    (pi y).val = fun i => (y i).val := by
+  induction xs with
+  | nil => funext i; cases i
+  | cons x xs ih =>
+    -- `List.pi` is semireducible, so name it explicitly: otherwise the goal
+    -- carries `Index ((x::xs).pi f)` while `val_flatMap` expects
+    -- `Index (_.flatMap _)`.
+    simp only [List.pi]
+    rw [pi, val_flatMap, val_map]
+    funext i
+    cases i with
+    | head => rfl
+    | tail i => exact congrFun (ih fun i => y i.tail) i
