@@ -7,7 +7,7 @@ module
 public import Batteries
 public import Extra
 
-@[expose] public section
+public meta section
 
 infix:50 " ≅ " => HEq
 

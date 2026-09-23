@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 module
 
-public import Algebra.Instances
+public meta import Algebra.Instances  -- the `Example` section's local notation needs it at elaboration time
 public import Algebra.Theories.Group
 
 @[expose] public section
