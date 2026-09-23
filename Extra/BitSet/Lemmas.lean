@@ -13,7 +13,7 @@ Lemmas for the operations on `Extra.BitSet`, and the `Std` instances
 (`Std.Commutative`, `Std.Associative`, ...) they give rise to.
 -/
 
-@[expose] public section
+public section
 
 namespace Extra.BitSet
 open BitVec
@@ -393,6 +393,14 @@ theorem sub_inter_distrib_left (x y z : BitSet w) : x - (y ∩ z) = (x - y) ∪ 
   ext; grind
 
 theorem sub_union_distrib_left (x y z : BitSet w) : x - (y ∪ z) = (x - y) ∩ (x - z) := by
+  ext; grind
+
+@[simp]
+theorem sub_union_inter (x y : BitSet w) : (x - y) ∪ (x ∩ y) = x := by
+  ext; grind
+
+@[simp]
+theorem sub_inter_inter (x y : BitSet w) : (x - y) ∩ (x ∩ y) = ∅ := by
   ext; grind
 
 @[simp, grind =]
