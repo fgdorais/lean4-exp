@@ -8,7 +8,7 @@ public import Extra.Basic
 public import Extra.Nat.Lemmas
 public import Extra.Pos.Basic
 
-@[expose] public section
+public section
 
 namespace Pos
 

@@ -7,10 +7,11 @@ module
 public import Extra.Index.Basic
 public import Extra.Index.Reverse
 
-@[expose] public section
+public section
 
 namespace List.Index
 
+@[expose]
 def append : {xs ys : List α} → Sum (Index xs) (Index ys) → Index (List.append xs ys)
   | [], _, .inr i => i
   | _::_, _, .inr i => tail (append (.inr i))
@@ -54,6 +55,7 @@ abbrev append_inl (i : Index xs) : Index (xs ++ ys) := append (.inl i)
 
 abbrev append_inr (j : Index ys) : Index (xs ++ ys) := append (.inr j)
 
+@[expose]
 def unappend : {xs ys : List α} → Index (xs ++ ys) → Sum (Index xs) (Index ys)
   | [], _, i => .inr i
   | x::xs, ys, i =>
@@ -98,6 +100,7 @@ theorem unappend_eq_iff_eq_append (i : Index (xs ++ ys)) (j : Sum (Index xs) (In
   · intro h; rw [←h, append_unappend]
   · intro h; rw [h, unappend_append]
 
+@[expose]
 def appendEquiv (xs ys : List α) : Equiv (Sum (Index xs) (Index ys)) (Index (xs ++ ys)) where
   fwd := append
   rev := unappend

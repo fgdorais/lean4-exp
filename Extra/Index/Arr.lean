@@ -9,7 +9,7 @@ public import Extra.Index.FlatMap
 public import Extra.Index.Map
 public import Extra.Index.Pi
 
-@[expose] public section
+public section
 
 namespace List
 
@@ -19,8 +19,10 @@ protected abbrev arr {α β} (xs : List α) (ys : List β) : List (Index xs → 
 namespace Index
 variable {α β} {xs : List α} {ys : List β}
 
+@[expose]
 def arr : (Index xs → Index ys) → Index (List.arr xs ys) := pi (β := fun _ => β) (f := fun _ => ys)
 
+@[expose]
 def unarr : Index (List.arr xs ys) → Index xs → Index ys := unpi (β := fun _ => β) (f := fun _ => ys)
 
 theorem unarr_arr (h : Index xs → Index ys) : unarr (arr h) = h := by
@@ -39,6 +41,7 @@ theorem unarr_eq_iff_eq_arr (k : Index (List.arr xs ys)) (h : Index xs → Index
   · intro h; rw [←h, arr_unarr]
   · intro h; rw [h, unarr_arr]
 
+@[expose]
 def arrEquiv (xs : List α) (ys : List β) : Equiv (Index xs → Index ys) (Index (List.arr xs ys)) where
   fwd := arr
   rev := unarr

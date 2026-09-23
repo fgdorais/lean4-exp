@@ -6,22 +6,24 @@ module
 
 public import Extra.Index.Basic
 
-@[expose] public section
+public section
 
 namespace List.Index
 
-@[inline]
+@[inline, expose]
 def mapImpl (f : α → β) {xs : List α} (i : Index xs) : Index (xs.map f) :=
   Index.ofFin ⟨i.toNat, xs.length_map f ▸ i.toNat_lt_length⟩
 
+@[expose]
 def map (f : α → β) : {xs : List α} → Index xs → Index (xs.map f)
   | _, head => head
   | _, tail i => tail (map f i)
 
-@[inline]
+@[inline, expose]
 def unmapImpl (f : α → β) {xs : List α} (i : Index (xs.map f)) : Index xs :=
   Index.ofFin ⟨i.toNat, xs.length_map f ▸ i.toNat_lt_length⟩
 
+@[expose]
 def unmap (f : α → β) : {xs : List α} → Index (xs.map f) → Index xs
   | _::_, head => head
   | _::_, tail i => tail (unmap f i)
@@ -83,6 +85,7 @@ theorem unmap_eq_iff_eq_map (f : α → β) {xs : List α} (i : Index (xs.map f)
   · intro h; rw [←h, map_unmap]
   · intro h; rw [h, unmap_map]
 
+@[expose]
 def mapEquiv (f : α → β) (xs : List α) : Equiv (Index xs) (Index (xs.map f)) where
   fwd := map f
   rev := unmap f

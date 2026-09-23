@@ -7,7 +7,7 @@ module
 public import Lean.Parser.Tactic
 public import Logic.Proposition.Classes
 
-@[expose] public section
+public section
 
 syntax (name:=by_cases) "by_cases " term,* (&" using " ident)? &" with " Lean.Parser.Tactic.matchAlts : tactic
 

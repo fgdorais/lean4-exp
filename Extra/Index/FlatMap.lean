@@ -8,14 +8,16 @@ public import Extra.Index.Basic
 public import Extra.Index.Flatten
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 namespace List.Index
 
+@[expose]
 def flatMap (f : α → List β) (k : (i : Index xs) × (Index (f i.val))) :
     Index (xs.flatMap f) :=
   flatten ⟨map f k.1, val_map f k.1 ▸ k.2⟩
 
+@[expose]
 def unFlatMap (f : α → List β) {xs : List α} (k : Index (xs.flatMap f)) :
     (i : Index xs) × (Index (f i.val)) :=
   match unflatten k with
@@ -57,6 +59,7 @@ theorem unFlatMap_eq_iff_eq_flatMap (f : α → List β) (i : Index (xs.flatMap 
   · intro h; rw [←h, flatMap_unFlatMap]
   · intro h; rw [h, unFlatMap_flatMap]
 
+@[expose]
 def flatMapEquiv (f : α → List β) (xs : List α) :
     Equiv ((i : Index xs) × Index (f i.val)) (Index (xs.flatMap f)) where
   fwd := flatMap f

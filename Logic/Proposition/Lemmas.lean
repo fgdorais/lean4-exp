@@ -7,7 +7,7 @@ module
 public import Logic.Proposition.Classes
 public import Logic.Proposition.Tactics
 
-@[expose] public section
+public section
 
 namespace Logic
 

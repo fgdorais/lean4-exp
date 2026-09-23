@@ -7,12 +7,13 @@ module
 public import Extra.Basic
 public import Extra.Find
 
-@[expose] public section
+public section
 
 namespace Fin
 
 /-! ### all/any -/
 
+@[expose]
 protected def all {n} (p : Fin n → Bool) : Bool :=
   Fin.foldr n (fun i v => p i && v) true
 
@@ -71,6 +72,7 @@ theorem all_iff_forall (p : Fin n → Prop) [DecidablePred p] :
     Fin.all (p ·) ↔ ∀ i, p i := by
   apply of_decide_eq_true; simp [decide_forall_eq_all]
 
+@[expose]
 protected def any {n} (p : Fin n → Bool) : Bool :=
   Fin.foldr n (fun i v => p i || v) false
 
@@ -163,7 +165,7 @@ theorem findSome?_isNone_iff_forall_isNone {f : Fin n → Option α} :
     · intros
       rw [Option.isNone_none]
 
-@[deprecated find? (since := "")]
+@[deprecated find? (since := ""), expose]
 def bfind? (p : Fin n → Bool) : Option (Fin n) :=
   Fin.findSome? fun i => bif p i then some i else none
 

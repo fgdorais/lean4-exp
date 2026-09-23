@@ -6,6 +6,6 @@ module
 
 public import Extra.Cast.DCast
 
-@[expose] public section
+public section
 
 macro "elim_cast" : tactic => `(tactic| simp only [←heq_iff_eq, elim_cast] <;> try apply heq_of_eq)

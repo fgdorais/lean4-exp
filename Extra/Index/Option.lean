@@ -7,7 +7,7 @@ module
 public import Extra.Index.Basic
 public import Extra.Index.Map
 
-@[expose] public section
+public section
 
 namespace List
 
@@ -15,10 +15,12 @@ protected abbrev option {α} (xs : List α) : List (Option α) := none :: xs.map
 
 namespace Index
 
+@[expose]
 def option : Option (Index xs) → Index xs.option
   | none => head
   | some i => tail (i.map some)
 
+@[expose]
 def unoption (k : Index xs.option) : Option (Index xs) :=
   match k with
   | head => none
@@ -42,6 +44,7 @@ theorem unoption_eq_iff_eq_option (k : Index (List.option xs)) (i : Option (Inde
   · intro h; rw [←h, option_unoption]
   · intro h; rw [h, unoption_option]
 
+@[expose]
 def optionEquiv (xs : List α) : Equiv (Option (Index xs)) (Index (List.option xs)) where
   fwd := option
   rev := unoption

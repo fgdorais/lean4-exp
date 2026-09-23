@@ -8,7 +8,7 @@ public import Extra.Basic
 public import Extra.Nat.Lemmas
 public import Extra.Tactic.Cast
 
-@[expose] public section
+public section
 
 namespace Array
 
@@ -16,7 +16,7 @@ namespace Array
 Custom recursor that views `Array α` as an inductive type with two constructors `Array.empty`
 and `Array.push`.
 -/
-@[elab_as_elim]
+@[elab_as_elim, expose]
 def recPush {motive : Array α → Sort _} (empty : motive #[])
     (push : (xs : Array α) → (x : α) → motive xs → motive (xs.push x)) (xs) : motive xs :=
   aux xs xs.size rfl
@@ -49,7 +49,7 @@ theorem recPush_push {motive : Array α → Sort _} (empty : motive #[])
     · exact pop_push ..
     · exact proof_irrel_heq ..
 
-@[elab_as_elim, inherit_doc recPush]
+@[elab_as_elim, inherit_doc recPush, expose]
 def recPushOn {motive : Array α → Sort _} (xs) (empty : motive #[])
     (push : (xs : Array α) → (x : α) → motive xs → motive (xs.push x)) : motive xs :=
   recPush empty push xs
@@ -63,7 +63,7 @@ theorem recPushOn_push {motive : Array α → Sort _} (empty : motive #[])
     (push : (xs : Array α) → (x : α) → motive xs → motive (xs.push x)) (xs x) :
     recPushOn (xs.push x) empty push = push xs x (recPushOn xs empty push) := recPush_push ..
 
-@[elab_as_elim, inherit_doc recPush]
+@[elab_as_elim, inherit_doc recPush, expose]
 def casesPushOn {motive : Array α → Sort _} (xs) (empty : motive #[])
     (push : (xs : Array α) → (x : α) → motive (xs.push x)) : motive xs :=
   recPush empty (fun xs x _ => push xs x) xs

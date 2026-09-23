@@ -7,7 +7,7 @@ module
 public import Extra.Basic
 public import Extra.Int.Basic
 
-@[expose] public section
+public section
 
 namespace Int
 

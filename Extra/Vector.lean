@@ -6,7 +6,7 @@ module
 
 public import Extra.Array
 
-@[expose] public section
+public section
 
 namespace Vector
 
