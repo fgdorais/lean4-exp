@@ -23,10 +23,10 @@ def indexIotaTR {α} (xs : List α) : List (Index xs) :=
     this ▸ loop xs (x :: ys) (this ▸ rs.push (Index.append_inr Index.head))
   loop xs [] #[]
 
--- `reducible` so that defeq can see through `indexIota` inside implicit type
--- arguments; without it `val_iota` and `iota_val` need
+-- `implicit_reducible` so that defeq can see through `indexIota` inside
+-- implicit type arguments; without it `val_iota` and `iota_val` need
 -- `backward.isDefEq.respectTransparency false`.
-@[implemented_by indexIotaTR, reducible, expose] -- TODO: use csimp
+@[implemented_by indexIotaTR, implicit_reducible, expose] -- TODO: use csimp
 def indexIota {α} : (xs : List α) → List (Index xs)
 | [] => []
 | _::xs => Index.head :: (indexIota xs).map Index.tail
