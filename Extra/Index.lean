@@ -1,4 +1,5 @@
 import Extra.Index.Append
+import Extra.Index.Arr
 import Extra.Index.Basic
 import Extra.Index.Iota
 import Extra.Index.FlatMap
