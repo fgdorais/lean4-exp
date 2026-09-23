@@ -53,7 +53,6 @@ def flattenEquiv (xss : List (List α)) :
     · intro | rfl => exact unflatten_flatten ..
     · intro | rfl => exact flatten_unflatten ..
 
---set_option backward.isDefEq.respectTransparency false in
 --set_option trace.Meta.isDefEq true in
 theorem val_flatten (i : (i : Index xss) × Index i.val) :
     (flatten i).val = i.snd.val := by
