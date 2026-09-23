@@ -31,7 +31,7 @@ protected def toBitVec (x : BitSet w) : BitVec w := x
 instance : DecidableEq (BitSet w) := inferInstanceAs (DecidableEq (BitVec w))
 
 /-- Number of elements of a bit set. -/
-def size (x : BitSet w) : Nat :=
+def card (x : BitSet w) : Nat :=
   Fin.sum fun (i : Fin w) => x.toBitVec[i].toNat
 
 /-- Membership notation `∈` for bit sets. -/

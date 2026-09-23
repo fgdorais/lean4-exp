@@ -65,3 +65,13 @@ def «repeat» (n : Nat) (l : List α) := n.fold (fun _ _ r => l ++ r) []
 
 theorem repeat_succ (l : List α) (n) : l.repeat (n+1) = l ++ l.repeat n := by
   rw [«repeat», Nat.fold_succ]; rfl
+
+theorem length_filter_eq_sum_map (l : List α) (p : α → Bool) :
+    (l.filter p).length = (l.map (fun a => (p a).toNat)).sum := by
+  induction l with
+  | nil => simp
+  | cons a l ih =>
+    cases h : p a
+    · simp [h, ih]
+    · simp [h, ih, List.sum_cons]
+      lia
