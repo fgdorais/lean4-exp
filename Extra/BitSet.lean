@@ -1,5 +1,11 @@
-import Extra.Basic
-import Extra.Fin.Basic
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Basic
+public import Extra.Fin.Basic
 
 /-!
 # Bit sets
@@ -10,6 +16,8 @@ Membership `∈`, inclusion `⊆` and equality are decidable, and the Boolean al
 operations are the corresponding bitwise operations: intersection `∩`, union `∪`,
 complement `-x` and difference `x - y`, with bounds `∅` and `univ`.
 -/
+
+@[expose] public section
 
 /-- A set of `Fin w` indices, represented as a bit vector of width `w`. -/
 def Extra.BitSet (w : Nat) := BitVec w
@@ -483,22 +491,23 @@ def ofList : List (Fin w) → BitSet w
   | [] => ∅
   | i :: l => singleton i ∪ ofList l
 
-/-- Tail-recursive version of `ofList`. -/
-private def ofListTR (l : List (Fin w)) : BitSet w :=
+/-- Tail-recursive version of `ofList`. Public because the `@[csimp]` theorem
+below must be public, and it mentions this definition. -/
+def ofListTR (l : List (Fin w)) : BitSet w :=
   loop ∅ l
 where
   loop
   | acc, [] => acc
   | acc, i :: l => loop (acc ∪ singleton i) l
 
-private theorem ofListTR.loop_eq (l : List (Fin w)) :
+theorem ofListTR.loop_eq (l : List (Fin w)) :
     loop acc l = acc ∪ ofList l := by
   induction l generalizing acc with
   | nil => simp only [ofList, loop, union_empty]
   | cons i l ih => simp only [ofList, loop, ih, union_assoc]
 
 @[csimp]
-private theorem ofList_eq_ofListTR : @ofList = @ofListTR := by
+theorem ofList_eq_ofListTR : @ofList = @ofListTR := by
   funext _ _; simp only [ofListTR, ofListTR.loop_eq, empty_union]
 
 theorem mem_toList_iff_mem {x : BitSet w} {i : Fin w} : i ∈ x.toList ↔ i ∈ x := by

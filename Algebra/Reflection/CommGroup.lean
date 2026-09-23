@@ -2,9 +2,13 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Instances
-import Algebra.Theories.Group
-import Algebra.Reflection.CommMonoid
+module
+
+public import Algebra.Instances
+public import Algebra.Theories.Group
+public import Algebra.Reflection.CommMonoid
+
+@[expose] public section
 
 namespace Algebra.CommGroup
 

@@ -2,9 +2,13 @@
 Copyright © 2023-2024 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Logic.Basic
-import Logic.Proposition.Lemmas
-import Logic.Relation.Basic
+module
+
+public import Logic.Basic
+public import Logic.Proposition.Lemmas
+public import Logic.Relation.Basic
+
+@[expose] public section
 
 open Logic
 

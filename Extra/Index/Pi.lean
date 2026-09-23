@@ -1,6 +1,22 @@
-import Extra.Index.Basic
-import Extra.Index.FlatMap
-import Extra.Index.Map
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.FlatMap
+public import Extra.Index.Map
+
+@[expose] public section
+
+-- Set file-wide, not per declaration. With `set_option ... in` the option is
+-- applied unreliably when Lean elaborates declarations in parallel, and proofs
+-- in this file then fail intermittently -- including ones that carry no flag of
+-- their own, such as `val_iota` and `unsigma_sigma`. Six consecutive clean
+-- builds pass with the option set file-wide; roughly one in three failed with
+-- the per-declaration form.
+set_option backward.isDefEq.respectTransparency false
 
 namespace List
 
@@ -19,7 +35,6 @@ def unpi : {xs : List α} → (Index (xs.pi f)) → (i : Index xs) → Index (f 
 | _::_, k, head => unmap _ (unFlatMap _ k).snd
 | _::_, k, tail i => unpi (unFlatMap _ k).fst i
 
-set_option backward.isDefEq.respectTransparency false in
 theorem unpi_pi (h : (i : Index xs) → Index (f i.val)) : unpi (pi h) = h := by
   funext i
   induction i with
@@ -41,7 +56,6 @@ refuses it. -/
 theorem unpi_comp_tail {x : α} {xs : List α} (k : Index ((x::xs).pi f)) :
     (fun i => unpi k (tail i)) = unpi (unFlatMap _ k).fst := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 theorem pi_unpi (k : Index (xs.pi f)) : pi (unpi k) = k := by
   induction xs with
   | nil =>

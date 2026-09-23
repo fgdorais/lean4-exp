@@ -2,10 +2,14 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Equiv.Basic
-import Logic.Proposition.Classes
-import Logic.Proposition.Lemmas
-import Logic.Proposition.Tactics
+module
+
+public import Extra.Equiv.Basic
+public import Logic.Proposition.Classes
+public import Logic.Proposition.Lemmas
+public import Logic.Proposition.Tactics
+
+@[expose] public section
 
 namespace Logic
 

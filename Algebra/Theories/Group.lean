@@ -2,9 +2,13 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Theories.Basic
-import Algebra.Theories.Monoid
-import Algebra.Theories.Groupoid
+module
+
+public import Algebra.Theories.Basic
+public import Algebra.Theories.Monoid
+public import Algebra.Theories.Groupoid
+
+@[expose] public section
 
 namespace Algebra
 variable {α} (s : GroupSig α)

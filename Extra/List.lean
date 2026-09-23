@@ -1,4 +1,12 @@
-import Extra.Basic
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Basic
+
+@[expose] public section
 
 namespace List
 
@@ -50,6 +58,10 @@ theorem map_comp {α β γ} (f : α → β) (g : β → γ) (as : List α) : as.
 
 def «repeat» (n : Nat) (l : List α) := n.fold (fun _ _ r => l ++ r) []
 
-@[simp] theorem repeat_zero (l : List α) : l.repeat 0 = [] := rfl
+-- `Nat.fold`'s body is not exposed, so these cannot be `rfl` in a `module`:
+-- a public theorem may only unfold exposed definitions.
+@[simp] theorem repeat_zero (l : List α) : l.repeat 0 = [] := by
+  rw [«repeat», Nat.fold_zero]
 
-theorem repeat_succ (l : List α) (n) : l.repeat (n+1) = l ++ l.repeat n := rfl
+theorem repeat_succ (l : List α) (n) : l.repeat (n+1) = l ++ l.repeat n := by
+  rw [«repeat», Nat.fold_succ]; rfl

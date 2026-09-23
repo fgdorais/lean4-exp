@@ -1,7 +1,15 @@
-import Extra.Index.Basic
-import Extra.Index.FlatMap
-import Extra.Index.Map
-import Extra.Index.Pi
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Index.Basic
+public import Extra.Index.FlatMap
+public import Extra.Index.Map
+public import Extra.Index.Pi
+
+@[expose] public section
 
 namespace List
 

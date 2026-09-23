@@ -2,7 +2,11 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Extra.Basic
+module
+
+public import Extra.Basic
+
+@[expose] public section
 
 /-- Dependent equality relation -/
 inductive DEq {β : α → Sort _} : {a₁ a₂ : α} → β a₁ → β a₂ → Prop

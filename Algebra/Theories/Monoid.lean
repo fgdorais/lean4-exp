@@ -2,9 +2,13 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Theories.Basic
-import Algebra.Theories.Semigroup
-import Algebra.Theories.Category
+module
+
+public import Algebra.Theories.Basic
+public import Algebra.Theories.Semigroup
+public import Algebra.Theories.Category
+
+@[expose] public section
 
 namespace Algebra
 variable {α} (s : MonoidSig α)

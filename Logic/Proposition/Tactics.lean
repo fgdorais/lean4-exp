@@ -2,8 +2,12 @@
 Copyright © 2023 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Lean.Parser.Tactic
-import Logic.Proposition.Classes
+module
+
+public import Lean.Parser.Tactic
+public import Logic.Proposition.Classes
+
+@[expose] public section
 
 syntax (name:=by_cases) "by_cases " term,* (&" using " ident)? &" with " Lean.Parser.Tactic.matchAlts : tactic
 

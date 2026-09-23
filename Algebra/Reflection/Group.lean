@@ -2,8 +2,12 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Instances
-import Algebra.Theories.Group
+module
+
+public meta import Algebra.Instances  -- the `Example` section's local notation needs it at elaboration time
+public import Algebra.Theories.Group
+
+@[expose] public section
 
 open List
 

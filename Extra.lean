@@ -1,21 +1,27 @@
-import Extra.Array
-import Extra.Basic
-import Extra.BitSet
-import Extra.Cast
-import Extra.Control
-import Extra.CounterM
-import Extra.Equiv
-import Extra.Fin
-import Extra.Find
-import Extra.Index
-import Extra.Int
-import Extra.List
-import Extra.Matrix
-import Extra.Nat
-import Extra.Pos
-import Extra.Quotient
-import Extra.Rat
-import Extra.Sigma
-import Extra.Tactic
-import Extra.Trans
-import Extra.Vector
+/-
+Copyright © 2026 François G. Dorais. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+module
+
+public import Extra.Array
+public import Extra.Basic
+public import Extra.BitSet
+public import Extra.Cast
+public import Extra.Control
+public import Extra.CounterM
+public import Extra.Equiv
+public import Extra.Fin
+public import Extra.Find
+public import Extra.Index
+public import Extra.Int
+public import Extra.List
+public import Extra.Matrix
+public import Extra.Nat
+public import Extra.Pos
+public import Extra.Quotient
+public import Extra.Rat
+public import Extra.Sigma
+public import Extra.Tactic
+public import Extra.Trans
+public import Extra.Vector

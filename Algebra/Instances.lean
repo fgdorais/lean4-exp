@@ -2,9 +2,13 @@
 Copyright © 2025 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Algebra.Signatures
-import Algebra.Identities
-import Algebra.Theories
+module
+
+public import Algebra.Signatures
+public import Algebra.Identities
+public import Algebra.Theories
+
+@[expose] public section
 
 open Algebra
 
