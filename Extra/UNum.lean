@@ -2,6 +2,17 @@
 Copyright © 2026 François G. Dorais. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
+module
+
+/-!
+# Fixed-width unsigned binary numerals
+
+`UNum d` is an unsigned binary numeral with `2 ^ d` bits, held as a balanced
+binary tree: a `UNum (d + 1)` is a low and a high `UNum d` half. Arithmetic is
+structural recursion on `d`, with a carry threaded through the two halves.
+-/
+
+@[expose] public section
 
 /-- `UNum d`: unsigned binary numeral with `2 ^ d` bits precision. -/
 inductive UNum : Nat → Type
@@ -75,6 +86,17 @@ def addc : {d : Nat} → (a b : UNum d) → Bool → UNum d × Bool
 instance : Add (UNum n) where
   add x y := addc x y false |>.fst
 
+theorem add_def (a b : UNum d) : a + b = (addc a b false).fst := rfl
+
+theorem addc_mk (a₀ a₁ b₀ b₁ : UNum d) (c : Bool) :
+    addc (mk a₀ a₁) (mk b₀ b₁) c
+      = (mk (addc a₀ b₀ c).1 (addc a₁ b₁ (addc a₀ b₀ c).2).1,
+         (addc a₁ b₁ (addc a₀ b₀ c).2).2) := by
+  cases h : addc a₀ b₀ c with
+  | mk s m =>
+    cases h' : addc a₁ b₁ m with
+    | mk t M => simp [addc, h, h']
+
 theorem addc_comm (a b : UNum d) : UNum.addc a b c = UNum.addc b a c := by
   induction d generalizing c with
   | zero =>
@@ -87,17 +109,49 @@ theorem addc_comm (a b : UNum d) : UNum.addc a b c = UNum.addc b a c := by
     match a, b with
     | mk a₀ a₁, mk b₀ b₁ => simp [addc, ih]
 
+theorem add_comm (a b : UNum d) : a + b = b + a := by
+  rw [add_def, add_def, addc_comm]
+
+theorem zero_eq : {d : Nat} → (0 : UNum d) = UNum.zero
+  | 0 => by decide
+  | _+1 => by
+    show mk (UNum.ofNat 0) (UNum.ofNat (0 >>> _)) = mk UNum.zero UNum.zero
+    rw [Nat.zero_shiftRight, show (UNum.ofNat 0 : UNum _) = UNum.zero from zero_eq]
+
+theorem addc_zero : {d : Nat} → (a : UNum d) → addc a UNum.zero false = (a, false)
+  | 0, bit a => by cases a <;> rfl
+  | _+1, mk a₀ a₁ => by
+    show addc (mk a₀ a₁) (mk UNum.zero UNum.zero) false = _
+    rw [addc, addc_zero a₀]
+    dsimp only
+    rw [addc_zero a₁]
+
 theorem add_zero (a : UNum d) : a + 0 = a := by
-  induction d with
-  | zero =>
-    match a with
-    | bit false => simp [(· + ·), Add.add]
-    | bit true => simp
-  | succ d ih =>
-    done
+  rw [add_def, zero_eq, addc_zero]
 
-theorem add_assoc (a b c : UNum d) : (a + b) + c = a + (b + c) := by
+-- Associativity with the carries made explicit. The two carry bits going in
+-- have to agree up to order, and then the two coming out agree up to order
+-- again -- which is what makes the induction step go through, since the hi
+-- half is fed the carries out of the lo half. `add_assoc` is the case where
+-- all four are `false`.
+theorem addc_assoc : {d : Nat} → (a b c : UNum d) → (p q p' q' : Bool) →
+    (p ^^ q) = (p' ^^ q') → (p && q) = (p' && q') →
+    (addc (addc a b p).1 c q).1 = (addc a (addc b c p').1 q').1
+    ∧ ((addc a b p).2 ^^ (addc (addc a b p).1 c q).2)
+        = ((addc b c p').2 ^^ (addc a (addc b c p').1 q').2)
+    ∧ ((addc a b p).2 && (addc (addc a b p).1 c q).2)
+        = ((addc b c p').2 && (addc a (addc b c p').1 q').2)
+  | 0, bit x, bit y, bit z, p, q, p', q', h₁, h₂ => by
+    cases x <;> cases y <;> cases z <;> cases p <;> cases q <;> cases p' <;> cases q' <;>
+      simp_all [addc]
+  | _+1, mk a₀ a₁, mk b₀ b₁, mk c₀ c₁, p, q, p', q', h₁, h₂ => by
+    have ih₀ := addc_assoc a₀ b₀ c₀ p q p' q' h₁ h₂
+    have ih₁ := addc_assoc a₁ b₁ c₁ _ _ _ _ ih₀.2.1 ih₀.2.2
+    simp only [addc_mk]
+    exact ⟨by rw [ih₀.1, ih₁.1], ih₁.2.1, ih₁.2.2⟩
 
+theorem add_assoc (a b c : UNum d) : (a + b) + c = a + (b + c) :=
+  (addc_assoc a b c false false false false rfl rfl).1
 
 /-- Subtraction with borrow. -/
 def subb : {d : Nat} → (a b : UNum d) → Bool → UNum d × Bool
