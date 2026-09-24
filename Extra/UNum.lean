@@ -12,7 +12,7 @@ binary tree: a `UNum (d + 1)` is a low and a high `UNum d` half. Arithmetic is
 structural recursion on `d`, with a carry threaded through the two halves.
 -/
 
-@[expose] public section
+public section
 
 /-- `UNum d`: unsigned binary numeral with `2 ^ d` bits precision. -/
 inductive UNum : Nat → Type
@@ -33,6 +33,7 @@ protected abbrev hi : UNum (d+1) → UNum d
   | mk _ hi => hi
 
 /-- Construct a `UNum d` numeral from a `Nat`. -/
+@[expose]
 protected def ofNat : {d : Nat} → (x : Nat) → UNum d
   | 0, x => bit (x.testBit 0)
   | d+1, x => mk (UNum.ofNat x) (UNum.ofNat (x >>> (1 <<< d)))
@@ -41,15 +42,18 @@ instance : OfNat (UNum n) x where
   ofNat := UNum.ofNat x
 
 /-- Bits of a `UNum d` numeral, as a `BitVec (2 ^ d)`. -/
+@[expose]
 protected def toBitVec (a : UNum d) : BitVec (2 ^ d) :=
   match d, a with
   | 0, bit a => .ofBool a
   | d+1, mk a₀ a₁ => Nat.two_pow_succ d ▸ BitVec.append a₁.toBitVec a₀.toBitVec
 
 /-- Value of a `UNum d` numeral as a `Nat`. -/
+@[expose]
 protected def toNat (a : UNum d) : Nat := a.toBitVec.toNat
 
 /-- Binary digits of a `UNum d` numeral, high bit first and with no prefix. -/
+@[expose]
 protected def toStringRaw : {d : Nat} → UNum d → String
   | 0, bit a => toString a.toNat
   | _+1, mk lo hi => UNum.toStringRaw hi ++ UNum.toStringRaw lo
@@ -58,6 +62,7 @@ instance : ToString (UNum d) where
   toString a := "0b" ++ a.toStringRaw
 
 /-- `UNum d` numeral zero. -/
+@[expose]
 protected def zero : {d : Nat} → UNum d
   | 0 => bit false
   | _+1 => mk UNum.zero UNum.zero
@@ -66,6 +71,7 @@ instance : Zero (UNum d) where
   zero := UNum.zero
 
 /-- `UNum d` numeral one. -/
+@[expose]
 protected def one : {d : Nat} → UNum d
   | 0 => bit true
   | _+1 => mk UNum.one UNum.zero
@@ -74,11 +80,13 @@ instance : One (UNum d) where
   one := UNum.one
 
 /-- Maximum `UNum d` value. -/
+@[expose]
 protected def max : {d : Nat} → UNum d
   | 0 => bit true
   | _+1 => mk UNum.max UNum.max
 
 /-- Addition with carry. -/
+@[expose]
 def addc : {d : Nat} → (a b : UNum d) → Bool → UNum d × Bool
   | 0, bit a, bit b, c => (bit <| a ^^ b ^^ c, c && (a ^^ b) ^^ (a && b))
   | _+1, mk a₀ a₁, mk b₀ b₁, c =>
@@ -157,6 +165,7 @@ theorem add_assoc (a b c : UNum d) : (a + b) + c = a + (b + c) :=
   (addc_assoc a b c false false false false rfl rfl).1
 
 /-- Subtraction with borrow. -/
+@[expose]
 def subb : {d : Nat} → (a b : UNum d) → Bool → UNum d × Bool
   | 0, bit a, bit b, c => (bit <| a ^^ b ^^ c, !a && (b ^^ c) ^^ (b && c))
   | _+1, mk a₀ a₁, mk b₀ b₁, c =>
@@ -168,6 +177,7 @@ instance : Sub (UNum n) where
   sub x y := subb x y false |>.fst
 
 /-- Double precision multiplication with double carry. -/
+@[expose]
 def mulAddAdd : {d : Nat} → (a b c₁ c₂ : UNum d) → UNum (d + 1)
   | 0, bit a, bit b, bit c₁, bit c₂ =>
     mk (bit <| (a && b) ^^ (c₁ ^^ c₂)) (bit <| ((a && b) && (c₁ ^^ c₂)) ^^ (c₁ && c₂))
@@ -181,6 +191,7 @@ def mulAddAdd : {d : Nat} → (a b c₁ c₂ : UNum d) → UNum (d + 1)
       mk (mk p₀ p₁) (mulAddAdd a₁ b₁ m₀ m₁)
 
 /-- Double precision multiplication. -/
+@[expose]
 def muld (a b : UNum d) : UNum (d + 1) := mulAddAdd a b UNum.zero UNum.zero
 
 instance : Mul (UNum d) where
