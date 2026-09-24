@@ -140,11 +140,6 @@ theorem addc_zero : {d : Nat} → (a : UNum d) → addc a UNum.zero false = (a, 
 theorem add_zero (a : UNum d) : a + 0 = a := by
   rw [add_def, zero_eq, addc_zero]
 
--- Associativity with the carries made explicit. The two carry bits going in
--- have to agree up to order, and then the two coming out agree up to order
--- again -- which is what makes the induction step go through, since the hi
--- half is fed the carries out of the lo half. `add_assoc` is the case where
--- all four are `false`.
 theorem addc_assoc : {d : Nat} → (a b c : UNum d) → (p q p' q' : Bool) →
     (p ^^ q) = (p' ^^ q') → (p && q) = (p' && q') →
     (addc (addc a b p).1 c q).1 = (addc a (addc b c p').1 q').1
