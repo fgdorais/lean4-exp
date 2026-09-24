@@ -8,7 +8,7 @@ public import Extra.Basic
 
 @[expose] public section
 
-open Std.Iterators
+open Std Iterators
 
 namespace UInt16
 
