@@ -16,9 +16,9 @@ structural recursion on `d`, with a carry threaded through the two halves.
 
 /-- `UNum d`: unsigned binary numeral with `2 ^ d` bits precision. -/
 inductive UNum : Nat → Type
-| /-- Constructor for `UNum 0`. -/
+| /-- A `UNum 0` numeral is a single bit. -/
   bit (b : Bool) : UNum 0
-| /-- Constructor for `UNum (d + 1)`. -/
+| /-- A `UNum (d + 1)` numeral is a low and a high `UNum d` half. -/
   mk (lo hi : UNum d) : UNum (d + 1)
 deriving DecidableEq
 
@@ -40,13 +40,16 @@ protected def ofNat : {d : Nat} → (x : Nat) → UNum d
 instance : OfNat (UNum n) x where
   ofNat := UNum.ofNat x
 
+/-- Bits of a `UNum d` numeral, as a `BitVec (2 ^ d)`. -/
 protected def toBitVec (a : UNum d) : BitVec (2 ^ d) :=
   match d, a with
   | 0, bit a => .ofBool a
   | d+1, mk a₀ a₁ => Nat.two_pow_succ d ▸ BitVec.append a₁.toBitVec a₀.toBitVec
 
+/-- Value of a `UNum d` numeral as a `Nat`. -/
 protected def toNat (a : UNum d) : Nat := a.toBitVec.toNat
 
+/-- Binary digits of a `UNum d` numeral, high bit first and with no prefix. -/
 protected def toStringRaw : {d : Nat} → UNum d → String
   | 0, bit a => toString a.toNat
   | _+1, mk lo hi => UNum.toStringRaw hi ++ UNum.toStringRaw lo
