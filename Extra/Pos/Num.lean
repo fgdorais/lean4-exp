@@ -93,7 +93,7 @@ theorem toBitList_ne_zero [NeZero n] : n.toBitList = (n / 2).toBitList ++ [n.tes
 
 @[implemented_by Nat]
 structure NumPos where
-  private ofBits ::
+  ofBits ::
   toBits : List Bool
 
 namespace NumPos

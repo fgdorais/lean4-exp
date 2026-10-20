@@ -56,7 +56,6 @@ structure ObjectArray (size : Nat) (type : Fin size → Type _) : Type _ where
 namespace ObjectArray
 
 /-- Constructs an `ObjectArray` using `init` as inital values. -/
-@[expose]
 protected def mk (init : (i : Fin size) → type i) : ObjectArray size type where
   data := Array.ofFn fun i => ⟨init i⟩
   size_eq := Array.size_ofFn ..
@@ -69,7 +68,6 @@ protected def get (a : ObjectArray size type) (i : Fin size) : type i :=
   a.data[i].cast (a.type_eq i).symm
 
 /-- Sets the `ObjectArray` item at index `i`. -/
-@[expose]
 protected def set (a : ObjectArray size type) (i : Fin size) (v : type i) : ObjectArray size type where
   data := a.data.set (i.cast a.size_eq.symm) ⟨v⟩
   size_eq := (Array.size_set ..).symm ▸ a.size_eq
@@ -78,7 +76,8 @@ protected def set (a : ObjectArray size type) (i : Fin size) (v : type i) : Obje
       simp [h]
     else
       have h : i.val ≠ j.val := mt Fin.eq_of_val_eq h
-      simp [h]
+      simp only [Fin.getElem_fin, Fin.val_cast]
+      rw [Array.getElem_set_ne _ _ h]
       exact a.type_eq ..
 
 theorem data_getElem {type : Fin size → Type _} (a : ObjectArray size type)
@@ -131,9 +130,9 @@ theorem set_mk {type : Fin size → Type _} {init} (i : Fin size) (v : type i) :
     ObjectArray.set (.mk init) i v = .mk fun j => if h : i = j then h ▸ v else init j := by
   ext j
   if h : i = j then
-    rw [← h, get_set, get_mk, dif_pos rfl]
+    rw [← h, get_set, get_mk, dite_eq_left rfl]
   else
-    rw [get_set_ne _ _ h, get_mk, get_mk, dif_neg h]
+    rw [get_set_ne _ _ h, get_mk, get_mk, dite_eq_right h]
 
 end ObjectArray
 
