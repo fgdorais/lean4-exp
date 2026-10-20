@@ -56,7 +56,6 @@ structure ObjectArray (size : Nat) (type : Fin size → Type _) : Type _ where
 namespace ObjectArray
 
 /-- Constructs an `ObjectArray` using `init` as inital values. -/
-@[expose]
 protected def mk (init : (i : Fin size) → type i) : ObjectArray size type where
   data := Array.ofFn fun i => ⟨init i⟩
   size_eq := Array.size_ofFn ..
@@ -69,7 +68,6 @@ protected def get (a : ObjectArray size type) (i : Fin size) : type i :=
   a.data[i].cast (a.type_eq i).symm
 
 /-- Sets the `ObjectArray` item at index `i`. -/
-@[expose]
 protected def set (a : ObjectArray size type) (i : Fin size) (v : type i) : ObjectArray size type where
   data := a.data.set (i.cast a.size_eq.symm) ⟨v⟩
   size_eq := (Array.size_set ..).symm ▸ a.size_eq
