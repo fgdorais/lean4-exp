@@ -5,5 +5,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 
 public import Extra.Nat.Bit
+public import Extra.Nat.EvenOdd
 public import Extra.Nat.Lemmas
 public import Extra.Nat.NeZero
